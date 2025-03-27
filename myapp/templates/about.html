@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Foody - About Fruits and Vegetables Cultivation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="">
+    <meta name="description" content="Learn about the benefits and methods of cultivating fruits and vegetables.">
+
+    <!-- Favicon -->
+    {% load static %}
+    <link href="{% static 'img/favicon.ico' %}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Lora:wght@600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h2 {
+            margin-top: 20px;
+        }
+        p {
+            color: #555;
+            margin-bottom: 15px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section img {
+            float: left;
+            margin-right: 20px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid fixed-top px-0 wow fadeIn" data-wow-delay="0.1s">
+        <div class="top-bar row gx-0 align-items-center d-none d-lg-flex">
+            <div class="col-lg-6 px-5 text-start">
+                <small><i class="fa fa-map-marker-alt me-2"></i>Kottayam, Kerala</small>
+                <small class="ms-4"><i class="fa fa-envelope me-2"></i>foodyworld@gmail.com</small>
+            </div>
+            <div class="col-lg-6 px-5 text-end">
+                <small>Follow us:</small>
+                <a class="text-body ms-3" href="#"><i class="fab fa-facebook-f"></i></a>
+                <a class="text-body ms-3" href="#"><i class="fab fa-twitter"></i></a>
+                <a class="text-body ms-3" href="#"><i class="fab fa-linkedin-in"></i></a>
+                <a class="text-body ms-3" href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+
+        <nav class="navbar navbar-expand-lg navbar-light py-lg-0 px-lg-5 wow fadeIn" data-wow-delay="0.1s">
+            <a href="{% url 'customer_dashboard' %}" class="navbar-brand ms-4 ms-lg-0">
+              
+            </a>
+            <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav ms-auto p-4 p-lg-0">
+                    <a href="{% url 'customer_dashboard' %}" class="nav-item nav-link active">Home</a>
+                    <a href="{% url 'about' %}" class="nav-item nav-link">About Us</a>
+                    <a href="{% url 'list_category_products' %}" class="nav-item nav-link">Products</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
+                        <div class="dropdown-menu m-0">
+                            <a href="#" class="dropdown-item">Blog Grid</a>
+                            <a href="#" class="dropdown-item">Our Features</a>
+                            <a href="{% url 'price_chart_customer' %}" class="dropdown-item">View Price Charts</a>
+                        </div>
+                    </div>
+                    <a href="{% url 'contact' %}" class="nav-item nav-link">Contact Us</a>
+                </div>
+                <div class="d-none d-lg-flex ms-2">
+                    <div class="dropdown">
+                        <a class="btn-sm-square bg-white rounded-circle ms-3" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <small class="fa fa-user text-body"></small>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                        </ul>
+                    </div>
+                    <a class="btn-sm-square bg-white rounded-circle ms-3" href="{% url 'view_cart' %}">
+                        <small class="fa fa-shopping-bag text-body"></small>
+                    </a>
+                    <a class="btn-sm-square bg-white rounded-circle ms-3" href="{% url 'wishlist' %}">
+                        <small class="fa fa-heart text-body"></small>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div><br><br><br>
+    
+    <div class="container my-5">
+        <h1>About Fruits and Vegetables Cultivation</h1>
+        
+        <div class="section">
+            <h2>Introduction to Cultivation</h2>
+            <p>
+                Fruits and vegetables cultivation is an essential aspect of agriculture that provides numerous benefits to individuals and communities. Cultivating these crops can lead to healthier diets, support local economies, and enhance environmental sustainability.
+            </p>
+            <img src="{% static 'img/a1.jpg' %}" alt="Cultivation Intro">
+        </div>
+        
+        <div class="section">
+            <h2>Benefits of Cultivating Fruits and Vegetables</h2>
+            <p>
+                Growing your own fruits and vegetables offers a range of advantages:
+            </p>
+            <ul>
+                <li><strong>Health Benefits:</strong> Fresh produce is rich in vitamins, minerals, and antioxidants, contributing to better health and well-being.</li>
+                <li><strong>Cost Savings:</strong> Home cultivation can reduce grocery bills and provide access to high-quality, organic produce.</li>
+                <li><strong>Environmental Impact:</strong> Reducing the carbon footprint associated with transporting produce from farms to stores.</li>
+                <li><strong>Personal Satisfaction:</strong> The joy and satisfaction of growing and harvesting your own food.</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <h2>Methods of Cultivation</h2>
+            <p>
+                There are various methods to cultivate fruits and vegetables, each suited to different types of plants and growing conditions:
+            </p>
+            <ul>
+                <li><strong>Traditional Soil Cultivation:</strong> Using soil beds or rows to grow crops.</li>
+                <li><strong>Hydroponics:</strong> Growing plants in a nutrient-rich water solution without soil.</li>
+                <li><strong>Aquaponics:</strong> Combining fish farming with hydroponics in a symbiotic environment.</li>
+                <li><strong>Vertical Gardening:</strong> Growing plants upwards in stacked layers to maximize space.</li>
+            </ul>
+            <img src="{% static 'img/a2.jpg' %}" alt="Cultivation Methods">
+        </div>
+        
+        <div class="section">
+            <h2>Tips for Successful Cultivation</h2>
+            <p>
+                To ensure successful cultivation of fruits and vegetables, consider the following tips:
+            </p>
+            <ul>
+                <li><strong>Choose the Right Plants:</strong> Select varieties suited to your climate and soil conditions.</li>
+                <li><strong>Prepare the Soil:</strong> Ensure your soil is rich in nutrients and well-drained.</li>
+                <li><strong>Regular Watering:</strong> Maintain consistent moisture levels to support healthy growth.</li>
+                <li><strong>Pest Management:</strong> Monitor for pests and diseases, and take appropriate measures to control them.</li>
+                <li><strong>Harvesting:</strong> Pick fruits and vegetables at their peak for the best taste and nutritional value.</li>
+            </ul>
+            <img src="/static/img/a3.jpg" alt="Cultivation Tips">
+        </div>
+        
+        <div class="section">
+            <h2>Conclusion</h2>
+            <p>
+                Cultivating fruits and vegetables is not only a rewarding experience but also a practical way to enhance your diet and contribute to a more sustainable future. Whether you’re a seasoned gardener or just starting, there’s always something new to learn and grow.
+            </p>
+        </div>
+    </div>
+
+    <footer>
+        <!-- Your footer code here -->
+    </footer>
+
+    <!-- Back to Top Button -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="{% static 'lib/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'lib/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'lib/wow/wow.min.js' %}"></script>
+    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+
+    <!-- Template Javascript -->
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

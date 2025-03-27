@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Admin Dashboard</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% load static %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #4d667f;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            padding-top: 20px;
+            position: relative;
+            height: 100%;
+        }
+
+        .sidebar h2 {
+            color: #fff;
+            text-align: center;
+            padding-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .sidebar .profile {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: #4d667f;
+            border-bottom: 1px solid #ffffff;
+        }
+
+        .sidebar .profile img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+
+        .sidebar .profile .name {
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .sidebar a {
+            color: #fff;
+            padding: 15px;
+            text-decoration: none;
+            display: block;
+            font-size: 16px;
+        }
+
+        .sidebar a:hover {
+            background: #495057;
+        }
+
+        .dropdown-menu {
+            background: #4d667f;
+            border: none;
+        }
+
+        .dropdown-menu a {
+            color: #fff;
+        }
+
+        .dropdown-menu a:hover {
+            background: #495057;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .table {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .table th {
+            background-color: #007bff;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .table td {
+            background-color: #ffffff;
+            color: #495057;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .table tbody tr:hover {
+            background-color: #e9ecef;
+        }
+
+        .table td,
+        .table th {
+            vertical-align: middle;
+            text-align: center;
+        }
+        .sidebar {
+    width: 250px;
+    background: #4d667f;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+    position: relative;
+    height: 125%;
+}
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="profile">
+            <img src="{% static 'img/admin.jpg' %}" alt="Admin Image">
+            <div class="name">Admin</div>
+        </div>
+        <h2 class="text-center"></h2>
+        <a href="{% url 'admin_dashboard' %}"><i class="fa fa-tachometer"></i> Dashboard</a>
+        <a href="{% url 'manage_users' %}"><i class="fa fa-users"></i> Manage Users</a>
+        <div class="dropdown">
+            <a class="dropdown-toggle" href="#" role="button" id="categoryDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-list"></i> Category
+            </a>
+            <div class="dropdown-menu" aria-labelledby="categoryDropdown">
+                <a href="{% url 'add_category' %}"><i class="fa fa-plus"></i> Add Category</a>
+                <a href="{% url 'list_categories' %}"><i class="fa fa-eye"></i> View Category</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a class="dropdown-toggle" href="#" role="button" id="subcategoryDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-tags"></i> Product
+            </a>
+            <div class="dropdown-menu" aria-labelledby="subcategoryDropdown">
+                <a href="{% url 'add_product_category' %}"><i class="fa fa-plus"></i> Add Product</a>
+                <a href="{% url 'view_product_categories' %}"><i class="fa fa-eye"></i> View Product</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a class="dropdown-toggle" href="#" role="button" id="subcategoryDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-tags"></i> Sub Category
+            </a>
+            <div class="dropdown-menu" aria-labelledby="subcategoryDropdown">
+                <a href="{% url 'add_subcategory' %}"><i class="fa fa-plus"></i> Add Sub Category</a>
+                <a href="{% url 'view_subcategories' %}"><i class="fa fa-eye"></i> View Sub Category</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a class="dropdown-toggle" href="#" role="button"
+            id="priceChartDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-line-chart"></i> Price Charts
+        </a>
+        <div class="dropdown-menu" aria-labelledby="priceChartDropdown">
+            <a class="dropdown-item" href="{% url 'add_price_chart' %}"><i class="fa fa-plus"></i> Add Price Chart</a>
+            <a class="dropdown-item" href="{% url 'view_price_charts' %}"><i class="fa fa-eye"></i> View Price Charts</a>
+        </div>
+    </div>
+    <a href="{% url 'compare_prices' %}"><i class="fa fa-exchange"></i> Compare Prices</a>
+    <a href="{% url 'login' %}"><i class="fa fa-sign-out"></i> Logout</a>
+</div>
+<div class="container mt-5">
+    <h1>Product Categories</h1>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Si.No</th>
+                <th>Category</th>
+                <th>Product Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product_category in page_obj %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ product_category.category.name }}</td>
+                <td>{{ product_category.product_name }}</td>
+                <td>
+                    <a href="{% url 'edit_product_category' product_category.id %}" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="{% url 'delete_product_category' product_category.id %}" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <!-- Pagination controls -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1" aria-label="First">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+            
+            {% for num in page_obj.paginator.page_range %}
+            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+</body>
+
+</html>

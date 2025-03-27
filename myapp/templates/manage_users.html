@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <title>Manage Users</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .table .thead-dark th {
+    color: #fff;
+    background-color: #4f6479;
+    border-color: #454d55;
+}
+        .sidebar {
+            width: 250px;
+            background: #4d667f;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar a {
+            color: #fff;
+            padding: 15px;
+            text-decoration: none;
+            display: block;
+        }
+        .sidebar a:hover {
+            background: #495057;
+        }
+        .sidebar .dropdown-menu a {
+            color: #333;
+        }
+        .sidebar .dropdown-menu a:hover {
+            background: #f8f9fa;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .role-buttons {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .role-buttons a {
+            margin: 0 10px;
+        }
+        .messages {
+            list-style-type: none;
+            padding: 0;
+        }
+        .messages li {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .modal-body textarea {
+            resize: none;
+        }
+    </style>
+      <style>
+        body {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            padding-top: 20px;
+            position: relative;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h2 {
+            color: #fff;
+            text-align: center;
+            padding-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .sidebar .profile {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: #34495e;
+            border-bottom: 1px solid #ffffff;
+        }
+
+        .sidebar .profile img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            border: 2px solid #fff;
+        }
+
+        .sidebar .profile .name {
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .sidebar a {
+            color: #fff;
+            padding: 15px;
+            text-decoration: none;
+            display: block;
+            font-size: 16px;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .sidebar a:hover {
+            background: #1abc9c;
+            transition: background 0.3s ease;
+        }
+
+        .dropdown-menu {
+            background: #34495e;
+            border: none;
+        }
+
+        .dropdown-menu a {
+            color: #fff;
+            padding: 10px;
+        }
+
+        .dropdown-menu a:hover {
+            background: #1abc9c;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #ecf0f1;
+        }
+
+        .table {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .table th {
+            background-color: #3498db;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .table td {
+            background-color: #ffffff;
+            color: #333;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: #f4f4f4;
+        }
+
+        .table tbody tr:hover {
+            background-color: #e0e0e0;
+        }
+
+        .table td,
+        .table th {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .alert {
+            margin-top: 20px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="profile">
+            <img src="{% static 'img/admin.jpg' %}" alt="Admin Image">
+            <div class="name">Admin</div>
+        </div><br><br>
+       <!-- <h2 class="text-center">Admin Panel</h2>-->
+        <a href="{% url 'admin_dashboard' %}"><i class="fa fa-tachometer"></i> Dashboard</a>
+        <a href="{% url 'manage_users' %}"><i class="fa fa-users"></i> Manage Users</a>
+        <div class="dropdown">
+            <a class="dropdown-toggle" href="#" role="button" id="categoryDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-list"></i> Category
+            </a>
+            <div class="dropdown-menu" aria-labelledby="categoryDropdown">
+                <a href="{% url 'add_category' %}"><i class="fa fa-plus"></i> Add Category</a>
+                <a href="{% url 'list_categories' %}"><i class="fa fa-eye"></i> View Category</a>
+            </div>
+        </div>
+       
+        <div class="dropdown">
+            <a class="dropdown-toggle" href="#" role="button" id="productDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-tags"></i> Product
+            </a>
+            <div class="dropdown-menu" aria-labelledby="productDropdown">
+                <a href="{% url 'add_product_category' %}"><i class="fa fa-plus"></i> Add Product</a>
+                <a href="{% url 'view_product_categories' %}"><i class="fa fa-eye"></i> View Product</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a class="dropdown-toggle" href="#" role="button" id="subcategoryDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-tags"></i> Sub Category
+            </a>
+            <div class="dropdown-menu" aria-labelledby="subcategoryDropdown">
+                <a href="{% url 'add_subcategory' %}"><i class="fa fa-plus"></i> Add Sub Category</a>
+                <a href="{% url 'view_subcategories' %}"><i class="fa fa-eye"></i> View Sub Category</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a class="dropdown-toggle" href="#" role="button" id="priceChartDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-line-chart"></i> Price Charts
+            </a>
+            <div class="dropdown-menu" aria-labelledby="priceChartDropdown">
+                <a class="dropdown-item" href="{% url 'add_price_chart' %}"><i class="fa fa-plus"></i> Add Price Chart</a>
+                <a class="dropdown-item" href="{% url 'view_price_charts' %}"><i class="fa fa-eye"></i> View Price Charts</a>
+            </div>
+        </div>
+        <a href="{% url 'compare_prices' %}"><i class="fa fa-exchange"></i> Compare Prices</a>
+        <a href="{% url 'login' %}"><i class="fa fa-sign-out"></i> Logout</a>
+    </div>
+    <div class="content"><br>
+        <div class="container"><br>
+            <h2></h2>
+
+           <!--{% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li class="{{ message.tags }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+--> 
+            <div class="role-buttons">
+                <a href="{% url 'filter_users' 'customer' %}" class="btn btn-info"><i class="fa fa-user"></i> Customer</a>
+                <a href="{% url 'filter_users' 'farmer' %}" class="btn btn-success"><i class="fa fa-leaf"></i> Farmer</a>
+                <a href="{% url 'filter_users' 'deliveryboy' %}" class="btn btn-warning"><i class="fa fa-truck"></i> Delivery Boy</a>
+            </div>
+
+            <table class="table table-striped table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ user.name }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.role }}</td>
+                            <td>{{ user.status }}</td>
+                            <td>
+                                {% if user.is_active %}
+                                    <a href="{% url 'deactivate_user' user.id %}" class="btn btn-warning btn-sm action-btn">Deactivate</a>
+                                {% else %}
+                                    <a href="{% url 'activate_user' user.id %}" class="btn btn-success btn-sm action-btn">Activate</a>
+                                {% endif %}
+                                <a href="{% url 'delete_user' user.id %}" class="btn btn-danger btn-sm">Delete</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Activation/Deactivation Modal -->
+    <div class="modal fade" id="actionModal" tabindex="-1" role="dialog" aria-labelledby="actionModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="actionModalLabel">Enter Message</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="actionForm" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="message">Message to User:</label>
+                            <textarea class="form-control" id="message" name="message" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.action-btn').on('click', function(e) {
+                e.preventDefault();
+                var actionUrl = $(this).attr('href');
+                $('#actionForm').attr('action', actionUrl);
+                $('#actionModal').modal('show');
+            });
+        });
+    </script>
+</body>
+</html>

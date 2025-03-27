@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Farmer Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: url('https://www.example.com/path/to/background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+        }
+        .sidebar {
+            width: 250px;
+            background: #a72b2b;
+            color: #fff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        .sidebar h2 {
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: #a72b2b;
+            padding: 20px 0;
+            margin: 0;
+            text-align: center;
+        }
+        .sidebar a, .sidebar .dropdown-toggle {
+            color: #fff;
+            padding: 15px 20px;
+            text-decoration: none;
+            display: block;
+            transition: background 0.3s;
+        }
+        .sidebar a:hover, .sidebar .dropdown-toggle:hover {
+            background: #1d2621;
+        }
+        .dropdown-menu {
+            background: #2e3b2d;
+            border: none;
+            box-shadow: none;
+        }
+        .dropdown-menu a {
+            color: #fff;
+            padding: 10px 20px;
+            transition: background 0.3s;
+        }
+        .dropdown-menu a:hover {
+            background: #1d2621;
+        }
+        .content {
+            margin-left: 250px; /* Match the width of the sidebar */
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        .form-control {
+            border-radius: 5px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+        .container {
+            width: 90%;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #dee2e6;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #495057;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            color: #495057;
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .edit-btn {
+            display: inline-block;
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: #ffffff;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.2s;
+            border: 1px solid transparent;
+        }
+        .edit-btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        .edit-btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5);
+            border: 1px solid #007bff;
+        }
+        .error {
+            color: red;
+            font-size: 0.9em;
+        }
+    </style>
+    
+</head>
+<body>
+    <div class="sidebar">
+        <h2 class="text-center py-3">Farmer Dashboard</h2>
+        <a href="{% url 'farmer_dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a>
+        <div class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-leaf"></i> Add Category</a>
+            <div class="dropdown-menu">
+                <a href="{% url 'add_category' %}"><i class="fa fa-plus"></i> Add Category</a>
+                <a href="{% url 'list_categories' %}"><i class="fa fa-eye"></i> View Category</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-leaf"></i> Products</a>
+            <div class="dropdown-menu">
+                <a href="{% url 'add_product' %}"><i class="fa fa-plus-square"></i> Add Product</a>
+                <a href="{% url 'list_products' %}"><i class="fa fa-eye"></i> View Products</a>
+            </div>
+        </div>
+        <a href="#"><i class="fa fa-shopping-cart"></i> Orders</a>
+        <a href="{% url 'farmer_profile' %}"><i class="fa fa-cogs"></i> Profile</a>
+        <a href="#"><i class="fa fa-sign-out"></i> Logout</a>
+    </div>
+
+    <div class="content">
+        <div class="container">
+            <h1>Edit Farmer Profile</h1>
+            <form method="post" onsubmit="return validateForm()">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" value="{{ user.name }}" required pattern="[A-Za-z\s]+" title="Name should only contain letters and spaces." />
+                    <div id="nameError" class="error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone:</label>
+                    <input type="text" id="phone" name="phone" value="{{ user.phone }}" required pattern="^[6789]\d{9}$" title="Phone number should start with 6, 7, 8, or 9 and must be 10 digits." />
+                    <div id="phoneError" class="error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Address:</label>
+                    <textarea id="address" name="address" required pattern="[A-Za-z\s]+" title="Address should only contain letters and spaces.">{{ user.address }}</textarea>
+                    <div id="addressError" class="error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="pincode">Pincode:</label>
+                    <input type="text" id="pincode" name="pincode" value="{{ user.pincode }}" required pattern="\d{6}" title="Pincode should be exactly 6 digits." />
+                    <div id="pincodeError" class="error"></div>
+                </div>
+
+                <button type="submit" class="edit-btn">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script>
+        function validateForm() {
+            let isValid = true;
+
+            // Name validation
+            const name = document.getElementById('name');
+            const nameError = document.getElementById('nameError');
+            if (!name.value.match(/^[A-Za-z\s]+$/)) {
+                nameError.textContent = 'Name should only contain letters and spaces.';
+                isValid = false;
+            } else {
+                nameError.textContent = '';
+            }
+
+            // Phone validation
+            const phone = document.getElementById('phone');
+            const phoneError = document.getElementById('phoneError');
+            if (!phone.value.match(/^[6789]\d{9}$/)) {
+                phoneError.textContent = 'Phone number should start with 6, 7, 8, or 9 and must be 10 digits.';
+                isValid = false;
+            } else {
+                phoneError.textContent = '';
+            }
+
+            // Address validation
+            const address = document.getElementById('address');
+            const addressError = document.getElementById('addressError');
+            if (!address.value.match(/^[A-Za-z\s]+$/)) {
+                addressError.textContent = 'Address should only contain letters and spaces.';
+                isValid = false;
+            } else {
+                addressError.textContent = '';
+            }
+
+            // Pincode validation
+            const pincode = document.getElementById('pincode');
+            const pincodeError = document.getElementById('pincodeError');
+            if (!pincode.value.match(/^\d{6}$/)) {
+                pincodeError.textContent = 'Pincode should be exactly 6 digits.';
+                isValid = false;
+            } else {
+                pincodeError.textContent = '';
+            }
+
+            return isValid;
+        }
+    </script>
+</body>
+</html>

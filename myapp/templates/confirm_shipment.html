@@ -1,0 +1,68 @@
+<!-- myapp/templates/confirm_shipment.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <title>Confirm Shipment</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+           
+            background-image: url('{% static "img/otp.jpg" %}'); /* Background image */
+            background-size: cover; /* Cover the entire background */
+            background-position: center; /* Center the background image */
+            backdrop-filter: blur(5px); /* Blur effect */
+            height: 100vh; /* Full height */
+            display: flex; /* Flexbox for centering */
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            color: #185f59; /* White text color */
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+            padding: 40px; /* Padding inside the container */
+            border-radius: 12px; /* Rounded corners */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Deeper shadow */
+            max-width: 400px; /* Limit the width of the container */
+        }
+        h2 {
+            margin-bottom: 20px; /* Space below the heading */
+            text-align: center; /* Center the heading */
+            font-weight: bold; /* Bold heading */
+        }
+        .btn-primary {
+            width: 100%; /* Full width button */
+            background-color: #007bff; /* Bootstrap primary color */
+            border: none; /* Remove border */
+            border-radius: 5px; /* Rounded corners */
+            padding: 10px; /* Padding for the button */
+            font-size: 16px; /* Font size */
+            transition: background-color 0.3s; /* Transition effect */
+        }
+        .btn-primary:hover {
+            background-color: #0056b3; /* Darker shade on hover */
+        }
+        .form-group label {
+            font-weight: bold; /* Bold label */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Enter OTP to Confirm Shipment</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="otp">OTP:</label>
+                <input type="text" class="form-control" id="otp" name="otp" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Confirm</button>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

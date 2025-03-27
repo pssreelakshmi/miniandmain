@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% load static %}
+    <title>Edit Delivery Boy Profile</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background: #e3c4ad;
+            color: #b14e4e;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+            padding-top: 20px;
+        }
+        .sidebar h2 {
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 20px;
+            margin: 0;
+            text-align: center;
+            background: #e3c4ad;
+        }
+        .sidebar a {
+            color: #aa3535;
+            padding: 15px 20px;
+            text-decoration: none;
+            display: block;
+            transition: background 0.3s;
+        }
+        .sidebar a:hover {
+            background: #da6864;
+        }
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+        .edit-profile-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border: 1px solid #dee2e6;
+        }
+        h1 {
+            text-align: center;
+            color: #343a40;
+            margin-bottom: 20px;
+            font-size: 32px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        label {
+            font-weight: bold;
+            color: #495057;
+        }
+        input[type="text"] {
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 10px;
+            width: 100%;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .cancel-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            color: #007bff;
+            font-size: 18px;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .cancel-link:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #6c757d;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Delivery Boy Dashboard</h2>
+        <a href="{% url 'deliveryboy_dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a>
+        <a href="#"><i class="fa fa-map-marker"></i> My Deliveries</a>
+        <a href="#"><i class="fa fa-shopping-cart"></i> Orders</a>
+        <a href="{% url 'deliveryboy_profile' %}"><i class="fa fa-user"></i> Profile</a>
+        <a href="#"><i class="fa fa-cogs"></i> Settings</a>
+        <a href="#"><i class="fa fa-sign-out"></i> Logout</a>
+    </div>
+
+    <div class="main-content">
+        <div class="edit-profile-container">
+            <h1>Edit Delivery Boy Profile</h1>
+            <form method="post">
+                {% csrf_token %}
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" value="{{ delivery_boy.name }}" required>
+
+                <label for="phone">Phone:</label>
+                <input type="text" id="phone" name="phone" value="{{ delivery_boy.phone }}" required>
+
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="address" value="{{ delivery_boy.address }}" required>
+
+                <label for="pincode">Pincode:</label>
+                <input type="text" id="pincode" name="pincode" value="{{ delivery_boy.pincode }}" required>
+
+                <button type="submit">Save Changes</button>
+            </form>
+            <a href="{% url 'deliveryboy_profile' %}" class="cancel-link">Cancel</a>
+        </div>
+        <div class="footer">
+            <p>&copy; 2024 Delivery Service. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

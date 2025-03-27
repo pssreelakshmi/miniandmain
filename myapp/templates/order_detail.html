@@ -1,0 +1,21 @@
+<!-- order_detail.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Detail</title>
+</head>
+<body>
+    <h1>Order Detail for Payment ID: {{ payment.payment_id }}</h1>
+    <p><strong>Order ID:</strong> {{ payment.order_id }}</p>
+    <p><strong>User:</strong> {{ payment.user.email }}</p>
+    <p><strong>Product:</strong> {{ payment.product.name }}</p>
+    <p><strong>Amount Paid:</strong> ${{ payment.amount_paid }}</p>
+    <p><strong>Status:</strong> {{ payment.status }}</p>
+    <p><strong>Created At:</strong> {{ payment.created_at }}</p>
+    
+    <!-- Add more details as needed -->
+
+    <a href="{% url 'order_list' %}">Back to Orders</a>
+</body>
+</html>

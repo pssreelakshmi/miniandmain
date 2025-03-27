@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Product List</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    {% load static %}
+    <!-- Favicon -->
+    <link href="{% static 'img/favicon.ico' %}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Lora:wght@600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    <style>
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card {
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-pills .nav-link {
+            border-radius: 0;
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .product-item {
+            display: block;
+        }
+
+        /* Overlay for "Out of Stock" message */
+.card {
+    position: relative; /* Ensures the overlay is positioned relative to the card */
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+    opacity: 1; /* Normal opacity */
+    transition: opacity 0.3s ease;
+}
+
+/* Overlay for "Out of Stock" message */
+.out-of-stock {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgb(77 46 46 / 60%);; /* Slightly transparent background */
+    color: white;
+    padding: 5px 10px; /* Reduced padding */
+    font-size: 1rem; /* Reduced font size */
+    font-weight: bold;
+    text-align: center;
+    z-index: 2;
+    display: none;
+    border-radius: 5px; /* Optional: for rounded corners */
+}
+
+.out-of-stock.show {
+    display: block; /* Show overlay when needed */
+}
+
+.card.out-of-stock-card img {
+    opacity: 0.5; /* Dim the image when out of stock */
+}
+.page-header {
+    padding-top: 12rem;
+    padding-bottom: 6rem;
+    background: url("{% static 'img/bg12.jpg' %}") top right no-repeat; /* Updated image path */
+    background-size: cover;
+}
+
+
+    </style>
+
+</head>
+
+<body>
+    <!-- Navbar Start -->
+    <div class="container-fluid fixed-top px-0 wow fadeIn" data-wow-delay="0.1s">
+        <div class="top-bar row gx-0 align-items-center d-none d-lg-flex">
+            <div class="col-lg-6 px-5 text-start">
+                <small><i class="fa fa-map-marker-alt me-2"></i>kottayam ,kerala</small>
+                <small class="ms-4"><i class="fa fa-envelope me-2"></i>foodyworld@gmail.com</small>
+            </div>
+            <div class="col-lg-6 px-5 text-end">
+                <small>Follow us:</small>
+                <a class="text-body ms-3" href=""><i class="fab fa-facebook-f"></i></a>
+                <a class="text-body ms-3" href=""><i class="fab fa-twitter"></i></a>
+                <a class="text-body ms-3" href=""><i class="fab fa-linkedin-in"></i></a>
+                <a class="text-body ms-3" href=""><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+
+        <nav class="navbar navbar-expand-lg navbar-light py-lg-0 px-lg-5 wow fadeIn" data-wow-delay="0.1s">
+            <a href="index.html" class="navbar-brand ms-4 ms-lg-0">
+                <!-- Navbar Brand Logo Here -->
+            </a>
+            <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav ms-auto p-4 p-lg-0">
+                    <a href="{% url 'customer_dashboard' %}" class="nav-item nav-link">Home</a>
+                    <a href="#" class="nav-item nav-link">About Us</a>
+                    <a href="{% url 'list_category_products' %}" class="nav-item nav-link">Products</a>
+                    
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
+                        <div class="dropdown-menu m-0">
+                            <a href="#" class="dropdown-item">Blog Grid</a>
+                            <a href="#" class="dropdown-item">Our Features</a>
+                            <a href="{% url 'price_chart_customer' %}" class="dropdown-item">View Price Charts</a>
+                        </div>
+                    </div>
+                    <a href="{% url 'contact' %}" class="nav-item nav-link">Contact Us</a>
+                </div>
+                <div class="d-none d-lg-flex ms-2">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="navbar-search-input" placeholder="Search for products..." oninput="searchProductsInNavbar()">
+                        <button class="btn btn-outline-secondary" type="button" onclick="startVoiceSearch()">
+                            <i class="fa fa-microphone"></i>
+                        </button>
+                        <button class="btn btn-outline-secondary" type="button" onclick="searchProductsInNavbar()">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                    <a class="btn-sm-square bg-white rounded-circle ms-3" href="">
+                        <small class="fa fa-shopping-bag text-body"></small>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div><br><br>
+    <!-- Navbar End -->
+
+    <!-- Page Header Start -->
+    <div class="container-fluid page-header wow fadeIn" data-wow-delay="0.1s">
+        <div class="container">
+            <h1 class="display-3 mb-3 animated slideInDown">Fresh Products</h1>
+            <nav aria-label="breadcrumb animated slideInDown">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Pages</a></li>
+                    <li class="breadcrumb-item text-dark active" aria-current="page">Contact Us</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+    <!-- Categories and Products Start -->
+    <div class="container my-5"><br>
+        <div class="row g-0 gx-5 align-items-end">
+            <div class="col-lg-6">
+                <div class="section-header text-start mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+                    <h1 class="display-5 mb-3">Our Products</h1>
+                </div>
+            </div>
+            <div class="col-lg-6 text-start text-lg-end wow slideInRight" data-wow-delay="0.1s">
+                <ul class="nav nav-pills d-inline-flex justify-content-end mb-5">
+                    <li class="nav-item me-2">
+                        <a class="btn btn-outline-primary border-2 active" data-bs-toggle="pill" href="#tab-all" onclick="filterProducts('all')">All</a>
+                    </li>
+                    {% for category in categories %}
+                        <li class="nav-item me-2">
+                            <a class="btn btn-outline-primary border-2" data-bs-toggle="pill" href="#tab-{{ forloop.counter }}" onclick="filterProducts('{{ category.id }}')">{{ category.name }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="row" id="product-list">
+            <!-- Inside your product loop -->
+            {% for product in products %}
+            <div class="col-md-3 mb-4 product-item" data-category="{{ product.category.id }}" data-name="{{ product.product_name.product_name | lower }}" data-features="{{ product.features | lower }}">
+                <div class="card {% if product.stock == 0 %} out-of-stock-card {% endif %}">
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.product_name.product_name }}">
+                    {% if product.stock == 0 %}
+                        <div class="out-of-stock show">Out of Stock</div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.product_name.product_name }}</h5>
+                        <p class="card-text"><strong>Rs:{{ product.price }}</strong></p>
+                        <p><strong>Farm:</strong> {{ product.farmer.user.address }}</p>
+                        <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">View More</a>
+                        <form method="post" action="{% url 'add_to_wishlist' %}" class="d-inline-block">
+                            {% csrf_token %}
+                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                            <button type="submit" class="btn btn-outline-secondary ms-2" {% if product.stock == 0 %}disabled{% endif %}>
+                                <i class="fa fa-heart"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        
+        </div>
+    </div>
+    <!-- Categories and Products End -->
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-light mt-5 py-5">
+        <div class="container">
+            <div class="row gx-5">
+                <div class="col-lg-3 col-md-6 mb-5">
+                    <h5 class="text-light mb-4">Contact Us</h5>
+                    <p><i class="fa fa-map-marker-alt me-3"></i>123 Street, New York, USA</p>
+                    <p><i class="fa fa-phone-alt me-3"></i>+012 345 6789</p>
+                    <p><i class="fa fa-envelope me-3"></i>info@example.com</p>
+                    <div class="d-flex pt-2">
+                        <a class="btn btn-outline-light btn-social" href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-outline-light btn-social" href="#"><i class="fab fa-twitter"></i></a>
+                        <a class="btn btn-outline-light btn-social" href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a class="btn btn-outline-light btn-social" href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-5">
+                    <h5 class="text-light mb-4">Quick Links</h5>
+                    <a class="btn btn-link" href="#">About Us</a>
+                    <a class="btn btn-link" href="#">Contact Us</a>
+                    <a class="btn btn-link" href="#">Privacy Policy</a>
+                    <a class="btn btn-link" href="#">Terms & Conditions</a>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-5">
+                    <h5 class="text-light mb-4">Newsletter</h5>
+                    <form action="">
+                        <div class="input-group">
+                            <input type="text" class="form-control border-light" placeholder="Your Email Address">
+                            <button class="btn btn-primary" type="button">Sign Up</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-5">
+                    <h5 class="text-light mb-4">Follow Us</h5>
+                    <a class="btn btn-link" href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-link" href="#"><i class="fab fa-twitter"></i></a>
+                    <a class="btn btn-link" href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a class="btn btn-link" href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Template JavaScript -->
+    <script src="{% static 'js/main.js' %}"></script>
+
+    <script>
+        function searchProductsInNavbar() {
+            const searchInput = document.getElementById('navbar-search-input').value.toLowerCase();
+            const productItems = document.querySelectorAll('.product-item');
+            
+            productItems.forEach(item => {
+                const name = item.getAttribute('data-name');
+                const features = item.getAttribute('data-features');
+                
+                if (name.includes(searchInput) || features.includes(searchInput) || searchInput === '') {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        function startVoiceSearch() {
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'en-US';
+
+    recognition.onresult = function (event) {
+        const searchInput = document.getElementById('navbar-search-input');
+        let transcript = event.results[0][0].transcript.trim();
+        
+        // Remove trailing punctuation (e.g., periods, exclamation marks)
+        transcript = transcript.replace(/[.,!?]+$/, '');
+        
+        searchInput.value = transcript;
+        searchProductsInNavbar();
+    };
+
+    recognition.onerror = function (event) {
+        console.error('Speech recognition error', event.error);
+    };
+
+    recognition.start();
+}
+
+
+        function filterProducts(categoryId) {
+            const productItems = document.querySelectorAll('.product-item');
+            
+            productItems.forEach(item => {
+                const productCategoryId = item.getAttribute('data-category');
+                
+                if (categoryId === 'all' || productCategoryId === categoryId) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

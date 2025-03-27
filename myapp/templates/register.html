@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+   
+    <style>
+        .image-container {
+            background: url('{% static "img/bg12.jpg" %}') center no-repeat;
+            background-size: cover;
+            height: 130vh;
+        }
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+        }
+        .form-container {
+            background-color: #e9e9e9;
+            display: flex;
+            justify-content: center;
+        }
+        .forget-link, .register-link, .login-link {
+            color: #a7a6c7;
+            font-weight: bold;
+        }
+        .form-box h4 {
+            font-weight: bold;
+            color: #a53838;
+        }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #020202;
+            text-align: left;
+            background-color: #020202;
+        }
+        .password-requirements {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+    </style>
+    <script type="text/javascript">
+        function preventBack() {
+            window.history.forward();
+        }
+        setTimeout("preventBack()", 0);
+        window.onunload = function () {
+            null
+        };
+    </script>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 form-container">
+                <div class="col-lg-8 col-md-12 col-sm-9 col-xs-12 form-box text-center">
+                    <div class="logo mt-5 mb-3"></div>
+                    <div class="heading mb-3">
+                        <h4>Create an account</h4>
+                    </div>
+                    <form name="registerForm" method="post" action="{% url 'register' %}" onsubmit="return validateForm()">
+                        {% csrf_token %}
+                        <div class="form-input">
+                            <span><i class="fa fa-user"></i></span>
+                            <input type="text" name="name" placeholder="Full Name" required>
+                            <div class="error-message" id="nameError"></div>
+                        </div>
+                        <div class="form-input">
+                            <span><i class="fa fa-envelope"></i></span>
+                            <input type="email" name="email" placeholder="Email Address" required>
+                            <div class="error-message" id="emailError"></div>
+                        </div>
+                        <div class="form-input">
+                            <span><i class="fa fa-phone"></i></span>
+                            <input type="tel" name="phone" placeholder="Phone" required pattern="^\d{10}$" title="Please enter a valid 10-digit phone number">
+                            <div class="error-message" id="phoneError"></div>
+                        </div>
+                        <div class="form-input">
+                            <span><i class="fa fa-map-marker"></i></span>
+                            <input type="text" name="address" placeholder="Address" required>
+                            <div class="error-message" id="addressError"></div>
+                        </div>
+                        <div class="form-input">
+                            <span><i class="fa fa-map-pin"></i></span>
+                            <input type="text" name="pincode" placeholder="Pincode" required pattern="^\d{6}$" title="Please enter a valid 6-digit pincode">
+                            <div class="error-message" id="pincodeError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Role:</label><br>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="role" value="farmer" required>
+                                <label class="form-check-label">Farmer</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="role" value="customer" required>
+                                <label class="form-check-label">Customer</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="role" value="deliveryboy" required>
+                                <label class="form-check-label">Delivery Boy</label>
+                            </div>
+                            <div class="error-message" id="roleError"></div>
+                        </div>
+                        
+                        <div class="form-input">
+                            <span><i class="fa fa-lock"></i></span>
+                            <input type="password" name="password" placeholder="Password" required>
+                           
+                            <div class="error-message" id="passwordError"></div>
+                        </div>
+                        <div class="form-input">
+                            <span><i class="fa fa-lock"></i></span>
+                            <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+                            <div class="error-message" id="confirmPasswordError"></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-12 d-flex">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="cb1">
+                                     <!--<label class="custom-control-label" for="cb1">I agree to all terms & conditions</label>-->
+                                    <div class="error-message" id="termsError"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-left mb-3">
+                            <button type="submit" class="btn btn-primary">Register</button>
+                        </div>
+                    
+                        <div class="row mb-3">
+                            <div class="col-4"></div>
+                            <div class="col-4"></div>
+                            <div class="col-4"></div>
+                        </div>
+                        <div>Already have an account?
+                            <a href="{% url 'login' %}" class="login-link">Login here</a>
+                        </div>
+                    </form>
+                    {% if error %}
+                    <p style="color:red;">{{ error }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-6 d-none d-md-block image-container"></div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Real-time validation
+            $('input[name="email"]').on('input', function() {
+                validateEmailField($(this));
+            });
+
+            $('input[name="phone"]').on('input', function() {
+                validatePhoneField($(this));
+            });
+
+            $('input[name="pincode"]').on('input', function() {
+                validatePincodeField($(this));
+            });
+
+            $('input[name="password"], input[name="confirm_password"]').on('input', function() {
+                validatePasswordFields();
+            });
+
+            $('input[name="name"]').on('input', function() {
+                validateNameField($(this));
+            });
+
+            $('input[name="address"]').on('input', function() {
+                validateAddressField($(this));
+            });
+
+            $('input[name="role"]').on('change', function() {
+                validateRoleField();
+            });
+
+            $('#cb1').on('change', function() {
+                validateTermsField();
+            });
+        });
+
+        function validateForm() {
+            let isValid = true;
+
+            if (!validateEmailField($('input[name="email"]'))) isValid = false;
+            if (!validatePhoneField($('input[name="phone"]'))) isValid = false;
+            if (!validatePincodeField($('input[name="pincode"]'))) isValid = false;
+            if (!validatePasswordFields()) isValid = false;
+            if (!validateNameField($('input[name="name"]'))) isValid = false;
+            if (!validateAddressField($('input[name="address"]'))) isValid = false;
+            if (!validateRoleField()) isValid = false;
+            if (!validateTermsField()) isValid = false;
+
+            // Placeholder for checking email uniqueness
+            if (!checkEmailUniqueness()) isValid = false;
+
+            return isValid;
+        }
+
+        function validateEmailField(emailField) {
+            const email = emailField.val();
+    // Regular expression to check valid email format and specific domains
+    const emailPattern = /^[^\s@]+@(gmail\.com|yahoo\.com|mca\.ajce\.in)$/;
+
+    if (email === '') {
+        $('#emailError').text('Email cannot be empty.');
+        return false;
+    } else if (!emailPattern.test(email)) {
+        $('#emailError').text('Please enter a valid email address with one of the following domains: gmail.com, yahoo.com, mca.ajce.in.');
+        return false;
+    } else {
+        $('#emailError').text('');
+        return true;
+    }
+}
+
+function validatePhoneField(phoneField) {
+    const phone = phoneField.val();
+    const phonePattern = /^\d{10}$/;
+    const repeatedDigitPattern = /^(\d)\1{9}$/; // Pattern to check if all 10 digits are the same
+
+    if (!phonePattern.test(phone)) {
+        $('#phoneError').text('Please enter a valid 10-digit phone number.');
+        return false;
+    } else if (repeatedDigitPattern.test(phone)) {
+        $('#phoneError').text('Phone number cannot contain the same digit repeated 10 times.');
+        return false;
+    } else {
+        $('#phoneError').text('');
+        return true;
+    }
+}
+
+
+        function validatePincodeField(pincodeField) {
+            const pincode = pincodeField.val();
+            const pincodePattern = /^\d{6}$/;
+            if (!pincodePattern.test(pincode)) {
+                $('#pincodeError').text('Please enter a valid 6-digit pincode.');
+                return false;
+            } else {
+                $('#pincodeError').text('');
+                return true;
+            }
+        }
+
+        function validatePasswordFields() {
+            const password = $('input[name="password"]').val();
+            const confirmPassword = $('input[name="confirm_password"]').val();
+            const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            
+            if (!passwordPattern.test(password)) {
+                $('#passwordError').text('Password must be at least 8 characters long and include uppercase letters, lowercase letters, numbers, and special characters.');
+                return false;
+            } else {
+                $('#passwordError').text('');
+            }
+            
+            if (password !== confirmPassword) {
+                $('#confirmPasswordError').text('Passwords do not match.');
+                return false;
+            } else {
+                $('#confirmPasswordError').text('');
+                return true;
+            }
+        }
+
+        function validateNameField(nameField) {
+            const name = nameField.val();
+            if (name.length === 0) {
+                $('#nameError').text('Name cannot be empty.');
+                return false;
+            } else {
+                $('#nameError').text('');
+                return true;
+            }
+        }
+
+        function validateAddressField(addressField) {
+            const address = addressField.val();
+            if (address.length === 0) {
+                $('#addressError').text('Address cannot be empty.');
+                return false;
+            } else {
+                $('#addressError').text('');
+                return true;
+            }
+        }
+
+        function validateRoleField() {
+            if ($('input[name="role"]:checked').length === 0) {
+                $('#roleError').text('Please select a role.');
+                return false;
+            } else {
+                $('#roleError').text('');
+                return true;
+            }
+        }
+
+        function validateNameField(nameField) {
+    const name = nameField.val().trim();
+    // Regular expression to ensure name does not start with a space, and each part is separated by a single space
+    const namePattern = /^[A-Za-z]+( [A-Za-z]+)*$/;
+
+    if (name === '') {
+        $('#nameError').text('Name cannot be empty.');
+        return false;
+    } else if (!namePattern.test(name) || name.startsWith(' ')) {
+        $('#nameError').text('Name must start with a letter and contain only letters separated by a single space.');
+        return false;
+    } else {
+        $('#nameError').text('');
+        return true;
+    }
+}
+
+        function checkEmailUniqueness() {
+            // Implement AJAX or other method to check email uniqueness
+            // For now, returning true for placeholder
+            return true;
+        }
+    </script>
+</body>
+</html>

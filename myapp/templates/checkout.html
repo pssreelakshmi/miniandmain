@@ -1,0 +1,628 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Cart</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    {% load static %}
+    <link href="{% static 'img/favicon.ico' %}" rel="icon">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    {% load static %}
+    <link href="{% static 'img/favicon.ico' %}" rel="icon">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Favicon -->
+    <link href="{% static 'img/favicon.ico' %}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Lora:wght@600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            color: #343a40;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+      
+
+        .navbar a {
+            color: #5f4f4f;
+            text-decoration: none;
+            display: block;
+            padding: 5px;
+            font-size: 16px;
+            margin-bottom: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .navbar a:hover {
+            background-color: #495057;
+        }
+
+        .navbar .nav-item.active a {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .checkout-container {
+    margin-left: 270px;
+    padding: 10px; /* Adjust as needed */
+    max-width: 1000px;
+    height: 500px; /* Set a specific height */
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+        .checkout-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .checkout-container h3 {
+            font-size: 28px;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #d94912, #a55b8e);
+            color: #fff;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .checkout-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px; /* Space between sections */
+        }
+
+        .customer-details, .cart-summary, .payment-methods {
+            flex: 1 1 30%;
+            min-width: 250px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f7f8fc;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .customer-details h4, .cart-summary h4, .payment-methods h4 {
+            margin-top: 0;
+            color: #444;
+            font-size: 22px;
+            font-weight: 600;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .customer-details p, .cart-summary ul, .payment-methods div {
+            margin: 10px 0;
+            color: #555;
+            font-size: 16px;
+        }
+
+        .cart-summary ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .cart-summary li {
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .cart-summary li::before {
+            content: "✔";
+            color: #6a11cb;
+            margin-right: 10px;
+        }
+
+        .confirm-order-btn {
+            display: block;
+            width: calc(100% - 40px);
+            margin: 20px;
+            padding: 15px;
+            font-size: 20px;
+            color: #fff;
+            background: linear-gradient(135deg, #ff6a00, #ee0979);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: 700;
+            transition: background 0.3s ease;
+        }
+
+        .confirm-order-btn:hover {
+            background: linear-gradient(135deg, #ee0979, #ff6a00);
+        }
+
+        .continue-shopping {
+            display: block;
+            margin: 20px 0;
+            font-size: 16px;
+            text-align: center;
+            text-decoration: none;
+            color: #007bff;
+            transition: color 0.3s;
+        }
+
+        .continue-shopping:hover {
+            color: #0056b3;
+        }
+
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .payment-methods div {
+            margin-bottom: 15px;
+        }
+
+        .payment-methods input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .checkout-container {
+                margin-left: 0;
+                max-width: 100%;
+            }
+
+            .navbar {
+                width: 100%;
+                height: auto;
+                position: static;
+            }
+
+            .navbar a {
+                display: inline-block;
+                padding: 10px;
+            }
+
+            .checkout-container {
+                margin: 20px;
+            }
+
+            .checkout-details {
+                flex-direction: column;
+            }
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            color: #343a40;
+            margin: 0;
+            padding: 0;
+        }
+
+        .cart-container {
+            padding: 40px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            margin-top: 80px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .cart-container h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        .cart-item:hover {
+            background-color: #f1f1f1;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .cart-item img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 20px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .cart-item div {
+            flex: 1;
+        }
+
+        .cart-item h4 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #343a40;
+        }
+
+        .cart-item p {
+            margin: 5px 0;
+            color: #6c757d;
+        }
+
+        .cart-item .price {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .cart-item form {
+            display: flex;
+            align-items: center;
+        }
+
+        .cart-item input[type="number"] {
+            width: 60px;
+            margin-right: 10px;
+        }
+
+        .cart-item button {
+            margin-left: 10px;
+            background-color: #dc3545;
+            color: #ffffff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .cart-item button:hover {
+            background-color: #c82333;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2rem;
+            color: #6c757d;
+        }
+
+        .checkout-box {
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .checkout-box h3 {
+            font-size: 1.5rem;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        .checkout-box .total {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #343a40;
+            margin-bottom: 20px;
+        }
+
+        .checkout-box button {
+            background-color: #af4b4b;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .checkout-box button:hover {
+            background-color: #d4753e;
+        }
+
+        @media (max-width: 768px) {
+            .cart-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .cart-item img {
+                width: 100%;
+                height: auto;
+                margin-bottom: 10px;
+            }
+        }
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card {
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-pills .nav-link {
+            border-radius: 0;
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .product-item {
+            display: block;
+        }
+        /* CSS */
+        .custom-button {
+    background-color: #007bff; /* Button background color */
+    border: none; /* Remove default border */
+    border-radius: 4px; /* Rounded corners */
+    width: 200px; /* Fixed width */
+    height: 60px; /* Fixed height */
+    display: inline-flex; /* Use flexbox for alignment */
+    align-items: center; /* Center content vertically */
+    justify-content: center; /* Center content horizontally */
+}
+
+.custom-button a.continue-shopping {
+    color: #ffffff; /* Text color */
+    text-decoration: none; /* Remove underline from link */
+    font-size: 16px; /* Font size */
+    font-weight: bold; /* Font weight */
+}
+
+.custom-button:hover {
+    background-color: #0056b3; /* Darker background on hover */
+}
+
+
+        
+    </style>
+</head>
+<body>
+    <!-- Navbar Start -->
+      <!-- Navbar Start -->
+      <div class="container-fluid fixed-top px-0 wow fadeIn" data-wow-delay="0.1s">
+        <div class="top-bar row gx-0 align-items-center d-none d-lg-flex">
+            <div class="col-lg-6 px-5 text-start">
+                <small><i class="fa fa-map-marker-alt me-2"></i>kottayam ,kerala</small>
+                <small class="ms-4"><i class="fa fa-envelope me-2"></i>foodyworld@gmail.com</small>
+            </div>
+            <div class="col-lg-6 px-5 text-end">
+                <small>Follow us:</small>
+                <a class="text-body ms-3" href=""><i class="fab fa-facebook-f"></i></a>
+                <a class="text-body ms-3" href=""><i class="fab fa-twitter"></i></a>
+                <a class="text-body ms-3" href=""><i class="fab fa-linkedin-in"></i></a>
+                <a class="text-body ms-3" href=""><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+
+        <nav class="navbar navbar-expand-lg navbar-light py-lg-0 px-lg-5 wow fadeIn" data-wow-delay="0.1s">
+            <a href="index.html" class="navbar-brand ms-4 ms-lg-0">
+                <!---<h1 class="fw-bold text-primary m-0">Gr<span class="text-secondary">oc</span>ery St<span class="text-secondary">or</span>e</h1>-->
+            </a>
+            <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav ms-auto p-4 p-lg-0">
+                    <a href="{% url 'customer_dashboard' %}"   class="nav-item nav-link active">Home</a>
+                    <a href="{% url 'about' %}" class="nav-item nav-link">About Us</a>
+                    <a href="{% url 'list_category_products' %}" class="nav-item nav-link">Products</a>
+                    
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
+                        <div class="dropdown-menu m-0">
+                            <a href="#" class="dropdown-item">Blog Grid</a>
+                            <a href="#" class="dropdown-item">Our Features</a>
+                            <a href="{% url 'price_chart_customer' %}" class="dropdown-item">View Price Charts</a>
+                            
+                        </div>
+                    </div>
+                    <a href="{% url 'contact' %}"  class="nav-item nav-link">Contact Us</a>
+                    <!--<a href="{% url 'price_chart_customer' %}" class="nav-item nav-link">View Price Charts</a>-->
+                </div>
+                <div class="d-none d-lg-flex ms-2">
+                    
+                    <div class="dropdown">
+                        <a class="btn-sm-square bg-white rounded-circle ms-3" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <small class="fa fa-user text-body"></small>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                           
+                            <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                        </ul>
+                    </div>
+                    <a class="btn-sm-square bg-white rounded-circle ms-3" href="{% url 'view_cart' %}">
+                        <small class="fa fa-shopping-bag text-body"></small>
+                       
+                        
+                    </a>
+                    <a class="btn-sm-square bg-white rounded-circle ms-3" href="{% url 'wishlist' %}">
+                        <small class="fa fa-heart text-body"></small>
+                    </a>
+                    
+                       
+                        
+                    </a>
+                  
+                </div>
+            </div>
+        </nav>
+    
+    <div class="checkout-container">
+        <h3>Checkout</h3><br><br>
+
+        <div class="checkout-details"><br>
+            <!-- Customer Account Details -->
+            <div class="customer-details">
+                <h4>Customer Details</h4>
+                <p>Name: {{ user.name }}</p>
+                <p>Email: {{ user.email }}</p>
+                <p>Address: {{ user.address }}</p>
+                <p>Phone: {{ user.phone }}</p>
+                <p> Pincode: {{ user.pincode }}</p>
+            </div>
+
+            <!-- Cart Items and Grand Total -->
+            <div class="cart-summary">
+                <h4>Cart Summary</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Quantity</th>
+                            <th>Total Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tbody>
+                            {% for item in cart_items %}
+                            <tr>
+                                <td>{{ item.product.product_name }}</td>  <!-- Display product name -->
+                                <td>{{ item.quantity }}</td>  <!-- Display product quantity -->
+                                <td>{{ item.total_price|floatformat:2 }}</td>  <!-- Display product total price -->
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    
+                </table><br><br>
+                <h4>Grand Total: Rs {{ grand_total|floatformat:2  }}</h4>
+            </div>
+
+            <!-- Payment Method Options 
+            <div class="payment-methods">
+                <h4>Payment Methods</h4>
+                <label><input type="radio" name="payment_method" value="credit_card"> Credit Card</label><br>
+                <label><input type="radio" name="payment_method" value="debit_card"> Debit Card</label><br>
+                <label><input type="radio" name="payment_method" value="paypal"> PayPal</label>
+            </div>
+        </div>
+-->
+        <!-- Confirm Order Button -->
+        <div class="checkout-box">
+            <h2>Order Summary</h2>
+            
+            <div class="total">
+                Grand Total: <br> Rs {{ grand_total|floatformat:2 }}
+            </div>
+            
+            <form id="payment-form">
+                {% csrf_token %}
+                <!-- Include hidden inputs for product IDs and quantities -->
+                {% for item in order_details_list %}
+                    <input type="hidden" name="product_ids" value="{{ item.product.id }}">
+                    <input type="hidden" name="quantity_{{ item.product.id }}" value="{{ item.quantity }}">
+                {% endfor %}
+                <button id="checkout-button">Confirm Order</button>
+            </form><br>
+            
+            <button class="custom-button"><br>
+                <a href="{% url 'list_category_products' %}" class="continue-shopping">Continue Shopping</a>
+            </button>
+        </div>
+    </div>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script type="text/javascript">
+        var options = {
+            "key": "{{ razorpay_key_id }}", // Your Razorpay Key ID
+            "amount": "{{ grand_total|floatformat:2|safe }}", // Amount in paise
+            "currency": "INR",
+            "name": "Green Grocery",
+            "description": "Purchase Description",
+            "image": "https://yourdomain.com/path/to/logo.png",
+            "order_id": "", // Order ID from backend
+            "handler": function (response){
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "{% url 'verify_payment' %}", true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        window.location.href = "{% url 'success' %}";
+                    } else {
+                        window.location.href = "{% url 'cancel' %}";
+                    }
+                };
+                xhr.send("razorpay_payment_id=" + response.razorpay_payment_id + 
+                         "&razorpay_order_id=" + response.razorpay_order_id + 
+                         "&razorpay_signature=" + response.razorpay_signature);
+            },
+            "prefill": {
+                "name": "{{ request.user.get_full_name }}",
+                "email": "{{ request.user.email }}",
+                "contact": "{{ request.user.profile.phone }}"
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+
+        var checkoutButton = document.getElementById('checkout-button');
+        checkoutButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            fetch('{% url "create_order" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({  // Pass necessary data to create order
+                    'grand_total': {{ grand_total }},
+                    // Include additional data as required by your backend
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                options.order_id = data.id;  // Set the order ID from response
+                var razorpay = new Razorpay(options);
+                razorpay.open();
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Cart</title>
+    <!-- Add your CSS and other head content -->
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h2>Your Cart</h2>
+        {% if cart_items %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Image</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                        <tr>
+                            <td>{{ item.product.name }}</td>
+                            <td><img src="{{ item.image.url }}" alt="{{ item.product.name }}" width="50"></td>
+                            <td>{{ item.quantity }} kg</td>
+                            <td>Rs {{ item.price }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h4>Total: Rs {{ total_price }}</h4>
+        {% else %}
+            <p>Your cart is empty.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

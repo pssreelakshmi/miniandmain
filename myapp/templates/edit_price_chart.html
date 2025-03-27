@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Edit Price Chart</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% load static %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #4d667f;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            padding-top: 20px;
+            position: relative;
+            height: 100%;
+        }
+
+        .sidebar h2 {
+            color: #fff;
+            text-align: center;
+            padding-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .sidebar .profile {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: #4d667f;
+            border-bottom: 1px solid #ffffff;
+        }
+
+        .sidebar .profile img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+
+        .sidebar .profile .name {
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .sidebar a {
+            color: #fff;
+            padding: 15px;
+            text-decoration: none;
+            display: block;
+            font-size: 16px;
+        }
+
+        .sidebar a:hover {
+            background: #495057;
+        }
+
+        .dropdown-menu {
+            background: #4d667f;
+            border: none;
+        }
+
+        .dropdown-menu a {
+            color: #fff;
+        }
+
+        .dropdown-menu a:hover {
+            background: #495057;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .table {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .table th {
+            background-color: #007bff;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .table td {
+            background-color: #ffffff;
+            color: #495057;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .table tbody tr:hover {
+            background-color: #e9ecef;
+        }
+
+        .table td,
+        .table th {
+            vertical-align: middle;
+            text-align: center;
+        }
+    </style>
+      <style>
+        body {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            padding-top: 20px;
+            position: relative;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h2 {
+            color: #fff;
+            text-align: center;
+            padding-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .sidebar .profile {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: #34495e;
+            border-bottom: 1px solid #ffffff;
+        }
+
+        .sidebar .profile img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            border: 2px solid #fff;
+        }
+
+        .sidebar .profile .name {
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .sidebar a {
+            color: #fff;
+            padding: 15px;
+            text-decoration: none;
+            display: block;
+            font-size: 16px;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .sidebar a:hover {
+            background: #1abc9c;
+            transition: background 0.3s ease;
+        }
+
+        .dropdown-menu {
+            background: #34495e;
+            border: none;
+        }
+
+        .dropdown-menu a {
+            color: #fff;
+            padding: 10px;
+        }
+
+        .dropdown-menu a:hover {
+            background: #1abc9c;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #ecf0f1;
+        }
+
+        .table {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .table th {
+            background-color: #3498db;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .table td {
+            background-color: #ffffff;
+            color: #333;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: #f4f4f4;
+        }
+
+        .table tbody tr:hover {
+            background-color: #e0e0e0;
+        }
+
+        .table td,
+        .table th {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .alert {
+            margin-top: 20px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div class="sidebar">
+        <div class="profile">
+            <img src="{% static 'img/admin.jpg' %}" alt="Admin Image">
+            <div class="name">Admin</div>
+        </div>
+        <h2 class="text-center">Admin Dashboard</h2>
+        <a href="{% url 'admin_dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a>
+        <a href="{% url 'manage_users' %}"><i class="fa fa-users"></i> Manage Users</a>
+        <div class="dropdown">
+            <a class="dropdown-toggle" href="#" role="button" id="categoryDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-cogs"></i> Category
+            </a>
+            <div class="dropdown-menu" aria-labelledby="categoryDropdown">
+                <a href="{% url 'add_category' %}"><i class="fa fa-plus"></i> Add Category</a>
+                <a href="{% url 'list_categories' %}"><i class="fa fa-eye"></i> View Categories</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a class="dropdown-toggle" href="#" role="button" id="productDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-box"></i> Product
+            </a>
+            <div class="dropdown-menu" aria-labelledby="productDropdown">
+                <a href="{% url 'add_product_category' %}"><i class="fa fa-plus"></i> Add Product</a>
+                <a href="{% url 'view_product_categories' %}"><i class="fa fa-eye"></i> View Products</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a class="dropdown-toggle" href="#" role="button" id="priceChartDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-chart-line"></i> Price Charts
+            </a>
+            <div class="dropdown-menu" aria-labelledby="priceChartDropdown">
+                <a class="dropdown-item" href="{% url 'add_price_chart' %}"><i class="fa fa-plus"></i> Add Price Chart</a>
+                <a class="dropdown-item" href="{% url 'view_price_charts' %}"><i class="fa fa-eye"></i> View Price Charts</a>
+            </div>
+        </div>
+        <a href="{% url 'login' %}"><i class="fa fa-sign-out"></i> Logout</a>
+    </div>
+    <div class="content">
+        <div class="container mt-5">
+            <h1>Edit Price Chart</h1>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="product_name">Product Name</label>
+                    <select id="product_name" name="product_name" class="form-control">
+                        {% for product in product_categories %}
+                        <option value="{{ product.id }}" {% if product.id == price_chart.product_name.id %}selected{% endif %}>
+                            {{ product.product_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category" class="form-control">
+                        {% for category in categories %}
+                        <option value="{{ category.id }}" {% if category.id == price_chart.category.id %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="subcategory">Subcategory</label>
+                    <select id="subcategory" name="subcategory" class="form-control">
+                        {% for subcategory in subcategories %}
+                        <option value="{{ subcategory.id }}" {% if subcategory.id == price_chart.subcategory.id %}selected{% endif %}>
+                            {{ subcategory.subcategory_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price (per kg)</label>
+                    <input type="number" id="price" name="price" class="form-control" value="{{ price_chart.price }}" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" name="date" class="form-control" value="{{ price_chart.date }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="quantity">Quantity (kg)</label>
+                    <input type="number" id="quantity" name="quantity" class="form-control" value="{{ price_chart.quantity }}" step="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="image">Image</label>
+                    <input type="file" id="image" name="image" class="form-control">
+                    {% if price_chart.image %}
+                    <img src="{{ price_chart.image.url }}" alt="Current Image" style="margin-top: 10px; max-width: 150px;">
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+
+</html>

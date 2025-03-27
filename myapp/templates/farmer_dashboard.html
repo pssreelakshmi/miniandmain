@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Farmer Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% load static %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+        .navbar {
+            background-color: rgba(145 53 53 / 80%); /* Semi-transparent dark background for navbar */
+            padding: 15px 20px; /* Increased padding for height */
+        }
+        .navbar-brand {
+            font-size: 1.5rem; /* Increased font size for brand */
+            color: #fff; /* White text for navbar brand */
+        }
+        .nav-link {
+            font-size: 1.2rem; /* Increased font size for links */
+            color: #fff; /* White text for navbar items */
+            padding: 10px 15px; /* Increased padding for links */
+        }
+        .nav-link:hover {
+            color: #fff; /* Light blue on hover */
+        }
+    
+        .content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Center content vertically */
+            align-items: center; /* Center content horizontally */
+            height: calc(100vh - 56px); /* Full height minus navbar height */
+            background: url('{% static "img/farm12.png" %}') no-repeat center center; /* Background image */
+            background-size: cover; /* Cover the entire area */
+            color: #fff; /* White text for better contrast */
+            padding: 20px; /* Padding for content */
+            margin-top: 0; /* Ensure no margin above the content */
+        }
+        .content h1 {
+            font-size: 48px; /* Larger font size for the heading */
+            margin-bottom: 20px;
+        }
+        .content p {
+            font-size: 24px; /* Larger font size for the paragraph */
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <!-- Horizontal Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="#">Farmer Dashboard</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'farmer_dashboard' %}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'list_products' %}">Products</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'add_product' %}">Add Product</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'farmer_profile' %}">Profile</a>
+                </li>
+                <li class="nav-item"></li>
+                    <a class="nav-link" href="{% url 'farmer_payment_list' %}">order</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="content">
+        <!-- Main content goes here -->
+        <h1>Welcome, Farmer</h1>
+      
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

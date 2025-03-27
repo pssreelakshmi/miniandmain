@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Admin Product View</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% load static %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            margin: 0;
+        }
+        .sidebar {
+            width: 250px;
+            background: #4d667f;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            padding-top: 20px;
+        }
+        .sidebar a {
+            color: #fff;
+            padding: 15px;
+            text-decoration: none;
+            display: block;
+            font-size: 16px;
+        }
+        .sidebar a:hover {
+            background: #495057;
+        }
+        .sidebar h2 {
+            color: #fff;
+            text-align: center;
+            padding-bottom: 20px;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .table {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        .table th {
+            background-color: #007bff;
+            color: #ffffff;
+            font-weight: bold;
+        }
+        .table td {
+            background-color: #ffffff;
+            color: #495057;
+        }
+        .table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .table tbody tr:hover {
+            background-color: #e9ecef;
+        }
+        .table td,
+        .table th {
+            vertical-align: middle;
+            text-align: center;
+        }
+        .in-stock {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .out-of-stock {
+            color: #dc3545;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2 class="text-center">Admin Dashboard</h2>
+        <a href="{% url 'admin_dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a>
+        <a href="{% url 'manage_users' %}"><i class="fa fa-users"></i> Manage Users</a>
+        <a href="#"><i class="fa fa-box"></i> Products</a>
+        <a href="{% url 'login' %}"><i class="fa fa-sign-out"></i> Logout</a>
+    </div>
+    <div class="content">
+        <h2>All Product Details</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Stock Status</th>
+                    <th>Farmer Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td>{{ product.product_name.name }}</td>
+                        <td>{{ product.category.name }}</td>
+                        <td>{{ product.description }}</td>
+                        <td>{{ product.price }}</td>
+                        <td>{{ product.quantity }}</td>
+                        <td class="{% if product.stock > 0 %}in-stock{% else %}out-of-stock{% endif %}">
+                            {% if product.stock > 0 %}
+                                In Stock
+                            {% else %}
+                                Out of Stock
+                            {% endif %}
+                        </td>
+                        <td>{{ product.farmer.user.email }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

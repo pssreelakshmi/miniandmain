@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .blog-post {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #fafafa;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+        .blog-post h2 {
+            margin-top: 0;
+            color: #444;
+        }
+        .blog-post img, .blog-post video {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        .blog-post .date {
+            font-size: 0.9em;
+            color: #888;
+            margin-bottom: 10px;
+        }
+        .blog-post .author {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        .blog-post .content {
+            font-size: 1em;
+            color: #333;
+            line-height: 1.6;
+        }
+        .blog-post .media-container {
+            margin-bottom: 15px;
+        }
+        .no-posts {
+            text-align: center;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Blog</h1>
+        {% for post in blog_posts %}
+        <div class="blog-post">
+            <h2>{{ post.title }}</h2>
+            <p class="date">{{ post.date }}</p>
+            <p class="author">By {{ post.author }}</p>
+            
+            {% if post.image %}
+            <div class="media-container">
+                <img src="{{ post.image }}" alt="Blog Post Image">
+            </div>
+            {% endif %}
+            
+            {% if post.video %}
+            <div class="media-container">
+                <video controls>
+                    <source src="{{ post.video }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            {% endif %}
+            
+            <div class="content">
+                <p>{{ post.content }}</p>
+            </div>
+        </div>
+        {% empty %}
+        <p class="no-posts">No blog posts available.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>
