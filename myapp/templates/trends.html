@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trends Dashboard</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background: linear-gradient(180deg, #333, #222);
+            color: white;
+            padding-top: 20px;
+            position: fixed;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar h2 {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: #fff;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            padding: 15px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid #444;
+            transition: background-color 0.3s ease;
+        }
+        .sidebar ul li:hover {
+            background-color: #444;
+        }
+        .content {
+            margin-left: 250px;
+            padding: 30px;
+            width: 100%;
+        }
+        .dashboard-header {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .menu-icon {
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            color: #007bff;
+        }
+        .menu-dropdown {
+            display: none;
+            position: absolute;
+            right: 20px;
+            top: 50px;
+            background: white;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            width: 180px;
+            z-index: 100;
+        }
+        .menu-dropdown a {
+            display: block;
+            padding: 12px;
+            text-decoration: none;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.3s ease;
+        }
+        .menu-dropdown a:hover {
+            background-color: #f4f4f4;
+        }
+        .trend-box {
+            background: white;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-height: 280px;
+        }
+        .trend-box h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: #007bff;
+        }
+        .trend-box p {
+            margin: 10px 0;
+            color: #555;
+        }
+        canvas {
+            max-width: 100%;
+            height: 200px !important;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+            .content {
+                margin-left: 200px;
+                padding: 20px;
+            }
+        }
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #343a40;
+            padding-top: 20px;
+            color: #fff;
+        }
+
+        .sidebar .brand {
+            font-size: 24px;
+            font-weight: bold;
+            padding: 15px 20px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .sidebar a {
+            padding: 12px 20px;
+            text-decoration: none;
+            font-size: 16px;
+            color: #fff;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="brand">Farmer Dashboard</div>
+        <a href="{% url 'farmer_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="{% url 'farmer_profile' %}"><i class="fas fa-user"></i> Profile</a>
+        <a href="{% url 'add_product' %}"><i class="fas fa-plus"></i> Add Product</a>
+        <a href="{% url 'list_products' %}"><i class="fas fa-list"></i> View Products</a>
+        <a href="{% url 'farmer_payment_list' %}"><i class="fas fa-shopping-cart"></i> Orders</a>
+        <a href="{% url 'trends' %}"><i class="fas fa-chart-line"></i> Trends</a>
+        <a href="{% url 'feedback_farm' %}"><i class="fas fa-comments"></i> Feedback</a>
+        <a href="{% url 'farmmaterial_view' %}"><i class="fas fa-book"></i> Learning Materials</a>
+        <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+
+    <div class="content">
+        <div class="dashboard-header">
+            <span>Trends Overview</span>
+            <div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
+        </div>
+
+        <div id="menuDropdown" class="menu-dropdown">
+            <a href="{% url 'product_price_details' %}">Price Chart</a>
+            <a href="{% url 'seasonal_page' %}">Seasonal Products</a>
+            <a href="{% url 'farmer_disease' %}"> Plant Diseases </a>
+
+            <a href="{% url 'upload' %}">Plant Disease detection</a>
+        </div>
+
+        <div class="trend-box">
+            <h3>Product Purchase Trends</h3>
+            <canvas id="purchaseTrendsChart" width="400" height="200"></canvas>
+        </div>
+
+        <div class="trend-box">
+            <h3>Sales Performance</h3>
+            <canvas id="salesPerformanceChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            var menu = document.getElementById("menuDropdown");
+            menu.style.display = menu.style.display === "block" ? "none" : "block";
+        }
+
+        document.addEventListener("click", function(event) {
+            var menu = document.getElementById("menuDropdown");
+            var menuIcon = document.querySelector(".menu-icon");
+            if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
+                menu.style.display = "none";
+            }
+        });
+
+        // Chart.js for Product Purchase Trends
+        var ctx1 = document.getElementById('purchaseTrendsChart').getContext('2d');
+        var purchaseTrendsChart = new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                datasets: [{
+                    label: 'Purchases',
+                    data: [65, 59, 80, 81, 56, 55, 40],
+                    backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                    borderColor: 'rgba(0, 123, 255, 1)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Chart.js for Sales Performance
+        var ctx2 = document.getElementById('salesPerformanceChart').getContext('2d');
+        var salesPerformanceChart = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                datasets: [{
+                    label: 'Sales',
+                    data: [12000, 19000, 15000, 18000],
+                    backgroundColor: 'rgba(40, 167, 69, 0.2)',
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

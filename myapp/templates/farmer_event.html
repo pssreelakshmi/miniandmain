@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Events</title>
+    <link rel="stylesheet" href="#">  <!-- Assuming a static folder structure -->
+    <style>
+        body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    height: 100vh;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #343a40;
+    padding-top: 20px;
+    color: #fff;
+}
+
+.sidebar .brand {
+    font-size: 24px;
+    font-weight: bold;
+    padding: 15px 20px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.sidebar a {
+    padding: 12px 20px;
+    text-decoration: none;
+    font-size: 16px;
+    color: #fff;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    background-color: #495057;
+}
+
+.content {
+    margin-left: 250px;
+    padding: 20px;
+    flex: 1;
+}
+
+.event-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.event-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding-bottom: 20px;
+    text-align: center;
+}
+
+.event-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.event-image {  /* Specific style for the image */
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.event-card-content {
+    padding: 20px;
+}
+
+.event-card button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.event-card button:hover {
+    background-color: #218838;
+}
+
+.closed-button {
+    background-color: #ccc !important;
+    cursor: not-allowed;
+}
+
+.scheduled-button {
+    background-color: #ccc !important;
+    cursor: not-allowed;
+}
+
+/* Modal Styling */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    cursor: pointer;
+    font-size: 24px;
+    color: #666;
+}
+
+/* Form Styling */
+.modal-content h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.modal-content label {
+    display: block;
+    text-align: left;
+    margin: 10px 0 5px;
+    font-weight: bold;
+    color: #444;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.modal-content button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.modal-content button:hover {
+    background-color: #0056b3;
+}
+
+.read-more-link {
+    color: blue;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.read-more-link:hover {
+    color: darkblue;
+}
+
+/* Success Modal Styling */
+.success-icon {
+    font-size: 48px;
+    color: #28a745;
+    margin-bottom: 20px;
+}
+.already-registered {
+    color: #28a745;
+    font-weight: bold;
+    margin-top: 10px;
+}
+/* Button Styling */
+.filter-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filter-buttons button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #44833c;
+    color: white;
+    transition: 0.3s;
+}
+
+.filter-buttons button:hover {
+    background-color: #61b356;
+}
+/* ... (rest of your CSS from the previous response) ... */
+
+.download-button {
+    background-color: #007bff; /* Or your preferred color */
+    color: white;
+    border: none;
+    padding: 10px; /* Adjust as needed */
+    font-size: 16px; /* Adjust as needed */
+    cursor: pointer;
+    border-radius: 5px;
+    transition: 0.3s;
+    display: inline-flex; /* To align icon nicely */
+    align-items: center;
+    justify-content: center;
+}
+
+.download-button:hover {
+    background-color: #0056b3; /* Darken on hover */
+}
+
+.download-button i {
+    margin: 0;  /* Remove any default margins on the icon */
+}
+.download-icon {
+    cursor: pointer;
+    font-size: 20px; /* Adjust size as needed */
+    color: #333; /* Adjust color as needed */
+}
+
+.download-icon:hover {
+    color: #007bff; /* Change color on hover */
+}
+
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="brand">Farmer Dashboard</div>
+        <a href="{% url 'farmer_dashboard' %}">Dashboard</a>
+        <a href="{% url 'farmer_profile' %}">Profile</a>
+        <a href="{% url 'add_product' %}">Add Product</a>
+        <a href="{% url 'list_products' %}">View Products</a>
+        <a href="{% url 'farmer_payment_list' %}">Orders</a>
+        <a href="{% url 'trends' %}">Trends</a>
+        <a href="{% url 'farmer_event' %}">Events</a>
+        <a href="{% url 'feedback_farm' %}">Feedback</a>
+        <a href="{% url 'farmmaterial_view' %}">Learning Materials</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </div>
+
+    <div class="content">
+        <h1></h1>
+        <div class="filter-buttons">
+            <button onclick="filterEvents('upcoming')">Upcoming</button>
+            <button onclick="filterEvents('previous')">Previous</button>
+        </div>
+        <div class="event-grid">
+            {% for event in events %}
+            {% if event.registration_end_date >= today and event.registration_start_date <= today %}
+                <div class="event-card" data-status="upcoming">
+                    <img src="{{ event.image.url }}" alt="{{ event.name }}" class="event-image">
+                    <div class="event-card-content">
+                        <h2>{{ event.name }}</h2>
+                        <p class="event-description">
+                            <span class="short-description">{{ event.description|truncatechars:100 }}</span>
+                            <span class="full-description" style="display: none;">{{ event.description }}</span>
+                            <span class="read-more-link" onclick="toggleDescription(this)">Read More</span>
+                        </p>
+                        <p><strong>Date:</strong> {{ event.event_date }}</p>
+                        <p><strong>Mode:</strong> {{ event.mode }}</p>
+                        <p><strong>Registration Start:</strong> {{ event.registration_start_date }}</p>
+                        <p><strong>Registration End:</strong> {{ event.registration_end_date }}</p>
+                        <button class="download-button" onclick="downloadImage('{{ event.image.url }}', '{{ event.name }}')">Download Poster</button>
+                        {% if event.id in registered_events %}
+                            <p class="already-registered">You have already registered for this event.</p>
+                        {% else %}
+                            <button onclick="openRegistrationPopup('{{ event.id }}')">Register</button>
+                        {% endif %}
+                    </div>
+                </div>
+            {% elif event.registration_start_date > today %}
+                <div class="event-card" data-status="upcoming">
+                    <img src="{{ event.image.url }}" alt="{{ event.name }}" class="event-image">
+                    <div class="event-card-content">
+                        <h2>{{ event.name }}</h2>
+                        <p class="event-description">
+                            <span class="short-description">{{ event.description|truncatechars:100 }}</span>
+                            <span class="full-description" style="display: none;">{{ event.description }}</span>
+                            <span class="read-more-link" onclick="toggleDescription(this)">Read More</span>
+                        </p>
+                        <p><strong>Date:</strong> {{ event.event_date }}</p>
+                        <p><strong>Mode:</strong> {{ event.mode }}</p>
+                        <p><strong>Registration Start:</strong> {{ event.registration_start_date }}</p>
+                        <p><strong>Registration End:</strong> {{ event.registration_end_date }}</p>
+                        <button class="scheduled-button" disabled>Scheduled</button>
+                        <button class="download-button" onclick="downloadImage('{{ event.image.url }}', '{{ event.name }}')">Download Poster</button>
+                    </div>
+                </div>
+            {% else %}
+                <div class="event-card" data-status="previous">
+                    <img src="{{ event.image.url }}" alt="{{ event.name }}" class="event-image">
+                    <div class="event-card-content">
+                        <h2>{{ event.name }}</h2>
+                        <p class="event-description">
+                            <span class="short-description">{{ event.description|truncatechars:100 }}</span>
+                            <span class="full-description" style="display: none;">{{ event.description }}</span>
+                            <span class="read-more-link" onclick="toggleDescription(this)">Read More</span>
+                        </p>
+                        <p><strong>Date:</strong> {{ event.event_date }}</p>
+                        <p><strong>Mode:</strong> {{ event.mode }}</p>
+                        <p><strong>Registration Start:</strong> {{ event.registration_start_date }}</p>
+                        <p><strong>Registration End:</strong> {{ event.registration_end_date }}</p>
+                        <button class="closed-button" disabled>Closed</button>
+                        <span class="download-icon" onclick="downloadImage('{{ event.image.url }}', '{{ event.name }}')">
+                            <i class="fas fa-download"></i>
+                        </span>
+                        
+                    </div>
+                </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <div id="registrationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeRegistrationModal()">&times;</span>
+            <h2>Event Registration</h2>
+            <form id="registrationForm" method="post" action="">
+                {% csrf_token %}
+                <input type="hidden" name="event_id" id="eventId">
+                <label>Name:</label>
+                <input type="text" name="name" required>
+                <label>Email:</label>
+                <input type="email" name="email" required>
+                <label>Phone:</label>
+                <input type="text" name="phone" required>
+                <button type="submit">Confirm Registration</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- OTP Verification Modal -->
+    <div id="otpModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeOTPModal()">&times;</span>
+            <h2>OTP Verification</h2>
+            <form id="otpForm" method="post" action="{% url 'verify_otps' %}">
+                {% csrf_token %}
+                <label>Enter OTP:</label>
+                <input type="text" name="otp" required>
+                <button type="submit">Verify OTP</button>
+            </form>
+            {% if error %}
+                <p style="color: red;">{{ error }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeSuccessModal()">&times;</span>
+            <div class="success-icon">✔️</div>
+            <h2>Registration Successful</h2>
+            <p>You have successfully registered for the event. The event link will be provided shortly.</p>
+        </div>
+    </div>
+
+    <script>
+        function toggleDescription(link) {
+    const descriptionContainer = link.parentElement;
+    const shortDescription = descriptionContainer.querySelector('.short-description');
+    const fullDescription = descriptionContainer.querySelector('.full-description');
+
+    if (fullDescription.style.display === 'none') {
+        shortDescription.style.display = 'none';
+        fullDescription.style.display = 'inline';
+        link.textContent = 'Read Less';
+    } else {
+        shortDescription.style.display = 'inline';
+        fullDescription.style.display = 'none';
+        link.textContent = 'Read More';
+    }
+}
+
+function openRegistrationPopup(eventId) {
+    document.getElementById("registrationModal").style.display = "flex";
+    document.getElementById("registrationForm").action = `/register-event/${eventId}/`; // Adjust URL if necessary
+}
+
+function closeRegistrationModal() {
+    document.getElementById("registrationModal").style.display = "none";
+}
+
+function closeOTPModal() {
+    document.getElementById("otpModal").style.display = "none";
+}
+
+function closeSuccessModal() {
+    document.getElementById("successModal").style.display = "none";
+}
+
+// Automatically open OTP modal after registration form submission
+document.getElementById("registrationForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    fetch(this.action, {
+        method: 'POST',
+        body: new FormData(this),
+    }).then(response => {
+        if (response.ok) {
+            closeRegistrationModal();
+            document.getElementById("otpModal").style.display = "flex";
+        }
+    });
+});
+
+// Handle OTP form submission
+document.getElementById("otpForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    fetch(this.action, {
+        method: 'POST',
+        body: new FormData(this),
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            closeOTPModal();
+            document.getElementById("successModal").style.display = "flex";
+        }
+    });
+});
+
+// Filter events by status
+function filterEvents(status) {
+    const eventCards = document.querySelectorAll('.event-card');
+    eventCards.forEach(eventCard => {
+        if (eventCard.dataset.status === status) {
+            eventCard.style.display = 'block';
+        } else {
+            eventCard.style.display = 'none';
+        }
+    });
+}
+
+// Function to download the image
+function downloadImage(imageUrl, imageName) {
+    const link = document.createElement('a');
+    link.href = imageUrl;
+    link.download = imageName + ".jpg";  // Or whatever the file extension is
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Initial filtering
+filterEvents('upcoming');
+    </script>  <!-- Assuming a static folder structure -->
+</body>
+</html>

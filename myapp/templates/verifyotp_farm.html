@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP</title>
+    <style>
+        /* Add your CSS styles here */
+    </style>
+</head>
+<body>
+    <h1>Verify OTP</h1>
+    <form method="post" action="{% url 'verify_otps' %}">  <!-- Updated URL name -->
+        {% csrf_token %}
+        <label>Enter OTP:</label>
+        <input type="text" name="otp" required>
+        <button type="submit">Verify OTP</button>
+    </form>
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+</body>
+</html>

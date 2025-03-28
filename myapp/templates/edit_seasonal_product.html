@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Seasonal Product</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            background-color: #f4f4f4;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #1e5b4e;
+            color: white;
+            height: 100vh;
+            padding-top: 20px;
+            position: fixed;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar nav ul li {
+            margin: 10px 0;
+            position: relative;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 15px;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        .sidebar a:hover {
+            background-color: #1e5b4e;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 250px;
+            width: 200px;
+            background-color: #34495e;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            padding: 15px;
+            font-size: 16px;
+        }
+
+        .sidebar li:hover .dropdown-content {
+            display: block;
+        }
+
+        .container {
+            margin-left: 270px;
+            width: 50%;
+            padding: 30px;
+            background-color: white;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-top: 50px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        select, input[type="text"], textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .image-upload {
+            margin-top: 10px; /* Space between other elements and the upload */
+        }
+
+        .image-upload label {
+            margin-bottom: 5px; /* Space between the label and the input */
+        }
+
+        .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px; /* Space between the input and the error message */
+            display: none; /* Initially hidden */
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <h2>Farmer Education</h2>
+        <nav>
+            <ul>
+                <li><a href="{% url 'education_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li class="dropdown">
+                    <a href="#"><i class="fas fa-users"></i> Seasonal Category</a>
+                    <div class="dropdown-content">
+                        <a href="{% url 'seasonal_category' %}">Add Month</a>
+                        <a href="{% url 'list_seasonal_categories' %}">View Products</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#"><i class="fas fa-users"></i> Seasonal Product</a>
+                    <div class="dropdown-content">
+                        <a href="{% url 'seasonal_product' %}">Add Product</a>
+                        <a href="{% url 'list_seasonal_products' %}">View Products</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#"><i class="fas fa-users"></i> Cultivation Tips</a> 
+                    <div class="dropdown-content">
+                        <a href="{% url 'create_material' %}">Add Cultivation</a>
+                        <a href="{% url 'material_list' %}">View Categories</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#"><i class="fas fa-users"></i> Category</a>
+                    <div class="dropdown-content">
+                        <a href="{% url 'edcat_category' %}">Add Category</a>
+                        <a href="{% url 'view_categories' %}">View Categories</a>
+                    </div>
+                </li>
+                <li><a href="#"><i class="fas fa-calendar-alt"></i> Events</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <div class="container">
+        <h2>Edit Seasonal Product</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% if error_message %}
+                <p style="color: red;">{{ error_message }}</p>
+            {% endif %}
+
+            <label for="product_name">Product Name:</label>
+            <input type="text" name="product_name" id="product_name" value="{{ product.product_name }}" onkeyup="validateInput(this)" required>
+            <div class="error-message"></div>
+
+            <label for="category_id">Category:</label>
+            <select name="category_id" id="category_id">
+                {% for cat in categories %}
+                    <option value="{{ cat.id }}" {% if cat == product.category %}selected{% endif %}>
+                        {{ cat.month_name }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <label for="description">Description:</label>
+            <textarea name="description" id="description" rows="3">{{ product.description }}</textarea>
+
+            <div class="image-upload">
+                <label for="image">Image:</label>
+                <input type="file" name="image" id="image" accept="image/*">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="Product Image" width="150">
+                {% endif %}
+            </div>
+
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+
+    <script>
+        function validateInput(input) {
+            let regex = /^[a-zA-Z0-9 ]+$/;
+            let errorMessage = input.nextElementSibling; // Get the next sibling (error message div)
+
+            if (input.value.trim() === "") {
+                input.style.borderColor = "red";
+                errorMessage.style.display = "block";
+                errorMessage.textContent = "Product name is required.";
+            } else if (!regex.test(input.value)) {
+                input.style.borderColor = "red";
+                errorMessage.style.display = "block";
+                errorMessage.textContent = "Only letters, numbers, and spaces are allowed.";
+            } else {
+                input.style.borderColor = "";
+                errorMessage.style.display = "none";
+            }
+        }
+    </script>
+
+</body>
+</html>

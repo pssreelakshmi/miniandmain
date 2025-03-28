@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+
+        /* Dashboard Container */
+        .dashboard-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: #1e5b4e; /* Dark Green for professional look */
+            color: white;
+            padding: 30px 20px;
+            box-shadow: 3px 0 8px rgba(0, 0, 0, 0.1);
+            transition: 0.3s;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 40px;
+            color: #ffffff;
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .sidebar nav ul li {
+            margin: 20px 0;
+        }
+
+        .sidebar nav ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar nav ul li a:hover {
+            background-color: #004d2b; /* Lighter Green */
+        }
+
+        .sidebar nav ul li a i {
+            margin-right: 10px;
+        }
+
+        /* Dropdown Styles */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            left: 100%;
+            top: 0;
+            background-color: #1e5b4e;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            z-index: 1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #004d2b;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            background-color: #ffffff;
+            overflow-y: auto;
+        }
+
+        .main-content header {
+            margin-bottom: 30px;
+        }
+
+        .main-content h1 {
+            font-size: 32px;
+            color: #2d6a4f;
+            font-weight: bold;
+        }
+
+        .main-content p {
+            font-size: 18px;
+            color: #555;
+        }
+
+        /* Table Styles */
+        .container {
+            max-width: 100%;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin: auto;
+            text-align: center;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2d6a4f;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #38a56c;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .no-events {
+            font-size: 18px;
+            color: #555;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Button Styles */
+        .action-btn {
+            display: inline-block;
+            padding: 6px 12px;
+            margin: 4px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .edit-btn {
+            background-color: #007bff;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+        }
+
+        .add-btn {
+            display: block;
+            width: 150px;
+            background: #28a745;
+            padding: 10px;
+            color: white;
+            text-align: center;
+            margin: 20px auto;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .read-more-link {
+    color: blue;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-left: 5px; /* Add some spacing */
+}
+
+.read-more-link:hover {
+    color: darkblue;
+}
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2>Farmer Education</h2>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'education_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li class="dropdown">
+                        <a href="#"><i class="fas fa-users"></i> Seasonal Category</a>
+                        <div class="dropdown-content">
+                            <a href="{% url 'seasonal_category' %}">Add month</a>
+                            <a href="{% url 'list_seasonal_categories' %}">View Month</a>
+                        </div>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#"><i class="fas fa-users"></i> Seasonal product</a>
+                        <div class="dropdown-content">
+                            <a href="{% url 'seasonal_product' %}">Add Product</a>
+                            <a href="{% url 'list_seasonal_products' %}">View product</a>
+                        </div>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#"><i class="fas fa-users"></i> Cultivation Tips</a>
+                        <div class="dropdown-content">
+                            <a href="{% url 'create_material' %}">Add Cultivation</a>
+                            <a href="{% url 'material_list' %}">View Categories</a>
+                        </div>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#"><i class="fas fa-users"></i> Category</a>
+                        <div class="dropdown-content">
+                            <a href="{% url 'edcat_category' %}">Add Category</a>
+                            <a href="{% url 'view_categories' %}">View Categories</a>
+                        </div>
+                    </li>
+                    <li><a href="{% url 'add_event' %}"><i class="fas fa-calendar-alt"></i> Events</a></li>
+                    <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="container">
+                <h2>Event Details</h2>
+                <a href="{% url 'add_event' %}" class="add-btn">Add Event</a>
+
+                {% if events %}
+                    <table>
+                        <tr>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Reg. Start Date</th>
+                            <th>Reg. End Date</th>
+                            <th>Event Date</th>
+                            <th>Mode</th>
+                            <th>Actions</th>
+                        </tr>
+                        {% for event in events %}
+                        <tr>
+                            <td><img src="{{ event.image.url }}" alt="Event Image"></td>
+                            <td>{{ event.name }}</td>
+                            <td>
+                                <span class="short-description">{{ event.description|truncatechars:50 }}</span>
+                                <span class="full-description" style="display: none;">{{ event.description }}</span>
+                                <span class="read-more-link" onclick="toggleDescription(this)" style="color: blue; cursor: pointer; text-decoration: underline;">Read More</span>
+                            </td>
+                            <td>{{ event.registration_start_date }}</td>
+                            <td>{{ event.registration_end_date }}</td>
+                            <td>{{ event.event_date }}</td>
+                            <td>{{ event.mode }}</td>
+                            <td>
+                                <a href="{% url 'edit_event' event.id %}" class="action-btn edit-btn">Edit</a>
+                                <a href="{% url 'delete_event' event.id %}" class="action-btn delete-btn" onclick="return confirm('Are you sure you want to delete this event?');">Delete</a>
+                                <a href="{% url 'view_registered_people' event.id %}" class="action-btn view-reg-btn">View Registered</a>
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+                    </table>
+                {% else %}
+                    <p class="no-events">No events available.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <style>
+        .view-reg-btn {
+            background-color: #28a745; /* Green color */
+        }
+    </style>
+    <script>
+        function toggleDescription(link) {
+            const descriptionContainer = link.parentElement;
+            const shortDescription = descriptionContainer.querySelector('.short-description');
+            const fullDescription = descriptionContainer.querySelector('.full-description');
+
+            if (fullDescription.style.display === 'none') {
+                shortDescription.style.display = 'none';
+                fullDescription.style.display = 'inline';
+                link.textContent = 'Read Less';
+            } else {
+                shortDescription.style.display = 'inline';
+                fullDescription.style.display = 'none';
+                link.textContent = 'Read More';
+            }
+        }
+    </script>
+</body>
+</html>

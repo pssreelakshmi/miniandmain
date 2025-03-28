@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback and Ratings</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f3f4f6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            background: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #a09fc3;
+            font-size: 2.5em;
+        }
+
+        /* Search Bar Styles */
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            width: 50%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+            font-size: 1em;
+        }
+
+        .search-bar input:focus {
+            border-color: #1a73e8;
+            box-shadow: 0 0 4px rgba(26, 115, 232, 0.4);
+        }
+
+        /* Button Styles */
+        .buttons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            background: #5951cb;
+            color: #fff;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .button:hover {
+            background: #0f5bb5;
+        }
+
+        .button.active {
+            background: #5170b9;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #43486d;
+            color: #fff;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 0.1em;
+        }
+
+        td {
+            background: #f9fafb;
+        }
+
+        tr:nth-child(even) td {
+            background: #f1f5f9;
+        }
+
+        tr:hover td {
+            background: #e3f2fd;
+        }
+
+        td, th {
+            border: 1px solid #ddd;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+
+            .search-bar input {
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'headers.html' %}
+    <div class="container">
+        <!-- <h1>Feedback and Ratings</h1>
+
+        Search Bar -->
+        <div class="search-bar">
+            <input type="text" id="search" placeholder="Search ........" onkeyup="searchContent()">
+        </div>
+
+        <!-- Filter Buttons -->
+        <div class="buttons">
+            <button class="button active" id="all-btn" onclick="filterContent('all')">All</button>
+            <button class="button" id="feedback-btn" onclick="filterContent('feedback')">Feedback</button>
+            <button class="button" id="rating-btn" onclick="filterContent('rating')">Rating</button>
+        </div>
+
+        <!-- Feedback Section -->
+        <div id="feedback-section">
+            <h2>Feedback</h2>
+            <table id="feedback-table">
+                <thead>
+                    <tr>
+                        <th>SI.No</th> <!-- Serial Number Column -->
+                        <th>User</th>
+                        <th>Product</th>
+                        <th>Feedback</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for feedback in feedbacks %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ feedback.user.name }}</td>
+                            <td>{{ feedback.product.product_name }}</td>
+                            <td>{{ feedback.feedback_text }}</td>
+                            <td>{{ feedback.created_at }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Rating Section -->
+        <div id="rating-section" style="display: none;">
+            <h2>Ratings</h2>
+            <table id="rating-table">
+                <thead>
+                    <tr>
+                        <th>SI.No</th> <!-- Serial Number Column -->
+                        <th>User</th>
+                        <th>Product</th>
+                        <th>Rating</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rating in ratings %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ rating.user.name }}</td>
+                            <td>{{ rating.product.product_name }}</td>
+                            <td>{{ rating.rating_value }}</td>
+                            <td>{{ rating.created_at }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- JavaScript for Search and Filtering -->
+    <script>
+        
+        function filterContent(section) {
+            // Hide all sections
+            document.getElementById('feedback-section').style.display = 'none';
+            document.getElementById('rating-section').style.display = 'none';
+
+            // Remove active class from all buttons
+            document.getElementById('all-btn').classList.remove('active');
+            document.getElementById('feedback-btn').classList.remove('active');
+            document.getElementById('rating-btn').classList.remove('active');
+
+            // Show the selected section
+            if (section === 'all') {
+                document.getElementById('feedback-section').style.display = 'block';
+                document.getElementById('rating-section').style.display = 'block';
+                document.getElementById('all-btn').classList.add('active');
+            } else if (section === 'feedback') {
+                document.getElementById('feedback-section').style.display = 'block';
+                document.getElementById('feedback-btn').classList.add('active');
+            } else if (section === 'rating') {
+                document.getElementById('rating-section').style.display = 'block';
+                document.getElementById('rating-btn').classList.add('active');
+            }
+        }
+
+        function searchContent() {
+            const query = document.getElementById('search').value.toLowerCase();
+            const feedbackRows = document.querySelectorAll('#feedback-table tbody tr');
+            const ratingRows = document.querySelectorAll('#rating-table tbody tr');
+
+            feedbackRows.forEach(row => {
+                const content = row.innerText.toLowerCase();
+                row.style.display = content.startsWith(query) ? '' : 'none';
+            });
+
+            ratingRows.forEach(row => {
+                const content = row.innerText.toLowerCase();
+                row.style.display = content.startsWith(query) ? '' : 'none';
+            });
+        }
+    </script>
+</body>
+</html>

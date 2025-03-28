@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Plant Disease</title>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Global Styles */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: #1e5b4e; /* Dark Green for professional look */
+            color: white;
+            padding: 30px 20px;
+            box-shadow: 3px 0 8px rgba(0, 0, 0, 0.1);
+            transition: 0.3s;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 40px;
+            color: #ffffff;
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .sidebar nav ul li {
+            margin: 20px 0;
+        }
+
+        .sidebar nav ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar nav ul li a:hover {
+            background-color: #004d2b; /* Lighter Green */
+        }
+
+        .sidebar nav ul li a i {
+            margin-right: 10px;
+        }
+
+        /* Dropdown Styles */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            left: 100%;
+            top: 0;
+            background-color: #1e5b4e;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            z-index: 1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #004d2b;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            background-color: #ffffff;
+            overflow-y: auto;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="file"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: vertical;
+            height: 150px;
+        }
+
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #3e8e41;
+        }
+
+        .errorlist {
+            color: red;
+            margin-bottom: 10px;
+        }
+
+        .error {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+    </style>
+    <script>
+        // Front-end validation for image and title in real-time
+        function validateTitle() {
+            const title = document.getElementById('title').value;
+            const errorElement = document.getElementById('titleError');
+            const titleRegex = /\d/;
+
+            if (titleRegex.test(title)) {
+                errorElement.textContent = "Title should not contain numbers.";
+                return false;
+            } else {
+                errorElement.textContent = ""; // Clear error
+                return true;
+            }
+        }
+
+        function validateImage() {
+            const imageFile = document.getElementById('image').files[0];
+            const errorElement = document.getElementById('imageError');
+            const allowedImageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+
+            if (imageFile) {
+                if (!allowedImageTypes.includes(imageFile.type)) {
+                    errorElement.textContent = "Please upload a valid image (JPG, PNG). PDF files are not allowed.";
+                    return false;
+                } else {
+                    errorElement.textContent = ""; // Clear error
+                    return true;
+                }
+            }
+            return true;
+        }
+
+        function validateDescription() {
+            const description = document.getElementById('description').value;
+            const errorElement = document.getElementById('descriptionError');
+
+            if (description.trim() === "") {
+                errorElement.textContent = "Description cannot be empty.";
+                return false;
+            } else {
+                errorElement.textContent = ""; // Clear error
+                return true;
+            }
+        }
+
+        // Trigger validation on input changes
+        function validateForm() {
+            const isTitleValid = validateTitle();
+            const isImageValid = validateImage();
+            const isDescriptionValid = validateDescription();
+
+            return isTitleValid && isImageValid && isDescriptionValid;
+        }
+
+        // Add event listeners for real-time validation
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('title').addEventListener('input', validateTitle);
+            document.getElementById('image').addEventListener('change', validateImage);
+            document.getElementById('description').addEventListener('input', validateDescription);
+        });
+    </script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2>Farmer Education</h2>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'education_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li class="dropdown">
+                        <a href="#"><i class="fas fa-users"></i> Seasonal Category</a>
+                        <div class="dropdown-content">
+                            <a href="{% url 'seasonal_category' %}">Add Month</a>
+                            <a href="{% url 'list_seasonal_categories' %}">View Month</a>
+                        </div>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#"><i class="fas fa-users"></i> Seasonal Product</a>
+                        <div class="dropdown-content">
+                            <a href="{% url 'seasonal_product' %}">Add Product</a>
+                            <a href="{% url 'list_seasonal_products' %}">View Product</a>
+                        </div>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#"><i class="fas fa-users"></i> Cultivation Tips</a>
+                        <div class="dropdown-content">
+                            <a href="{% url 'create_material' %}">Add Cultivation</a>
+                            <a href="{% url 'material_list' %}">View Categories</a>
+                        </div>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#"><i class="fas fa-users"></i> Category</a>
+                        <div class="dropdown-content">
+                            <a href="{% url 'edcat_category' %}">Add Category</a>
+                            <a href="{% url 'view_categories' %}">View Categories</a>
+                        </div>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#"><i class="fas fa-users"></i> Diseases</a>
+                        <div class="dropdown-content">
+                            <a href="{% url 'add_disease' %}">Add Disease</a>
+                            <a href="{% url 'view_diseases' %}">View Diseases</a>
+                        </div>
+                    </li>
+                    <li><a href="{% url 'add_event' %}"><i class="fas fa-calendar-alt"></i> Events</a></li>
+                    <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="container">
+                <h1>Add Plant Disease</h1>
+                <form method="post" enctype="multipart/form-data" onsubmit="return validateForm();">
+                    {% csrf_token %}
+
+                    <div class="errorlist" id="errorSummary"></div>
+
+                    <label for="title">Title:</label>
+                    <input type="text" id="title" name="title" value="{{ form.title.value|default:'' }}" required>
+                    <div class="error" id="titleError"></div>
+
+                    <label for="image">Image:</label>
+                    <input type="file" id="image" name="image" required>
+                    <div class="error" id="imageError"></div>
+
+                    <label for="description">Description:</label>
+                    <textarea id="description" name="description" required>{{ form.description.value|default:'' }}</textarea>
+                    <div class="error" id="descriptionError"></div>
+                    
+                    <label for="tips_to_control">Tips to Control:</label>
+                    <textarea id="tips_to_control" name="tips_to_control" required>{{ form.tips_to_control.value|default:'' }}</textarea>
+                    <div class="error" id="tipsError"></div>
+
+
+                    <button type="submit">Add Disease</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

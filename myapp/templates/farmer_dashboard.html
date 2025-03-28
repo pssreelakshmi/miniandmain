@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Farmer Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% load static %}
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #343a40;
+            padding-top: 20px;
+            color: #fff;
+        }
+
+        .sidebar .brand {
+            font-size: 24px;
+            font-weight: bold;
+            padding: 15px 20px;
+            text-align: center;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        .sidebar a {
+            padding: 12px 20px;
+            text-decoration: none;
+            font-size: 16px;
+            color: #fff;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+    background-color: #637b95;
+    color: #fff;
+    border-radius: 10px 10px 0 0;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .chart-container {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .quick-actions {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .quick-actions .btn {
+            width: 150px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 10px;
+        }
+
+        .quick-actions .btn i {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="brand">Farmer Dashboard</div>
+        <a href="{% url 'farmer_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="{% url 'farmer_profile' %}"><i class="fas fa-user"></i> Profile</a>
+        <a href="{% url 'add_product' %}"><i class="fas fa-plus"></i> Add Product</a>
+        <a href="{% url 'list_products' %}"><i class="fas fa-list"></i> View Products</a>
+        <a href="{% url 'farmer_payment_list' %}"><i class="fas fa-shopping-cart"></i> Orders</a>
+        <a href="{% url 'trends' %}"><i class="fas fa-chart-line"></i> Trends</a>
+        <a href="{% url 'home' %}" class="nav-link">
+            <i class="fas fa-home"></i> Plant Home
+          </a>
+        <a href="{% url 'farmer_event' %}"><i class="fas fa-calendar-alt"></i> Events</a>
+        <!-- <a href="{% url 'predicts' %}"><i class="fas fa-calendar-alt"></i> crop prediction</a>-->
+       
+
+        <a href="{% url 'feedback_farm' %}"><i class="fas fa-comments"></i> Feedback</a>
+        <a href="{% url 'farmmaterial_view' %}"><i class="fas fa-book"></i> Learning Materials</a>
+        <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <!-- Welcome Card -->
+        <div class="card mb-4">
+            <div class="card-header">
+                Welcome, Farmer!
+            </div>
+            <div class="card-body">
+                <p>Manage your farm activities, track orders, and access learning materials to improve your farming practices.</p>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <a href="{% url 'add_product' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Add Product</a>
+            <a href="{% url 'list_products' %}" class="btn btn-success"><i class="fas fa-list"></i> View Products</a>
+            <a href="{% url 'farmer_payment_list' %}" class="btn btn-warning"><i class="fas fa-shopping-cart"></i> Orders</a>
+            <a href="{% url 'feedback_farm' %}" class="btn btn-info"><i class="fas fa-comments"></i> Feedback</a>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <h5>Crop Yield Overview</h5>
+                    <canvas id="cropYieldChart"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <h5>Monthly Sales</h5>
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        
+    <!-- Chart.js Scripts -->
+    <script>
+        // Crop Yield Chart
+        const cropYieldChart = new Chart(document.getElementById('cropYieldChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Tomatoes', 'Potatoes', 'Corn', 'Wheat', 'Rice'],
+                datasets: [{
+                    label: 'Yield (in tons)',
+                    data: [12, 19, 8, 15, 10],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Sales Chart
+        const salesChart = new Chart(document.getElementById('salesChart'), {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Sales (in $)',
+                    data: [1000, 1500, 1200, 1800, 2000, 2500],
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

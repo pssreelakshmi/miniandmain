@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Dashboard - Plant Cultivation Predictor</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1e5b4e;
+            --secondary-color: #478949;
+            --accent-color: #ff8f00;
+            --light-bg: #f1f8e9;
+            --white: #ffffff;
+            --text-dark: #263238;
+            --text-light: #757575;
+            --error-bg: #ffebee;
+            --error-text: #c62828;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .brand {
+            font-size: 22px;
+            font-weight: bold;
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            margin: 0 5px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        
+        .nav-links a:hover {
+            background: #004d2b;
+        }
+        
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        /* Dashboard Cards */
+        .dashboard-card {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease;
+            border: none;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 12px 12px 0 0 !important;
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-success {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+        
+        .btn-warning {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        
+        /* Plant Predictor Section */
+        .predictor-section {
+            margin-top: 3rem;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+        
+        .section-header::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 4px;
+            background: var(--accent-color);
+            margin: 1rem auto 0;
+            border-radius: 2px;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        .section-subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed var(--secondary-color);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            background-color: rgba(129, 199, 132, 0.05);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-area:hover {
+            background-color: rgba(129, 199, 132, 0.1);
+            border-color: var(--primary-color);
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-label {
+            display: block;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .file-hint {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Features Grid */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .feature {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(255, 143, 0, 0.1);
+            border-radius: 8px;
+        }
+        
+        .feature i {
+            font-size: 2rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+        
+        /* Charts */
+        .chart-container {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 0 1rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .quick-actions {
+                flex-direction: column;
+            }
+            
+            .quick-actions .btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            
+            .nav-links {
+                display: none; /* Consider a mobile menu for navigation */
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="brand">
+            <i class="fas fa-leaf"></i> Farmer Dashboard
+        </div>
+        <nav class="nav-links">
+            <a href="{% url 'farmer_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="{% url 'list_products' %}"><i class="fas fa-list"></i> Products</a>
+            <a href="{% url 'farmer_payment_list' %}"><i class="fas fa-shopping-cart"></i> Orders</a>
+            <a href="{% url 'feedback_farm' %}"><i class="fas fa-comments"></i> Feedback</a>
+            <a href="{% url 'farmer_profile' %}"><i class="fas fa-user"></i> Profile</a>
+            <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+    </header>
+
+    
+        <!-- Charts Section -->
+        
+        <!-- Plant Cultivation Predictor Section -->
+        <div class="predictor-section">
+            <div class="section-header">
+                <h2 class="section-title">Plant Cultivation Predictor</h2>
+                <p class="section-subtitle">Upload an image of your plant to get cultivation recommendations</p>
+            </div>
+            
+            <div class="dashboard-card">
+                <form method="post" enctype="multipart/form-data" action="{% url 'predictedplant' %}">
+                    {% csrf_token %}
+                    <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                        <div class="upload-icon">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <h3>Upload Plant Image</h3>
+                        <p class="file-hint">Click to browse or drag and drop your plant image</p>
+                        <input type="file" id="fileInput" name="plant_image" accept="image/*" class="file-input" required>
+                        <label for="fileInput" class="file-label">Choose a file</label>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 1.5rem;">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-magic"></i> Analyze Plant
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="features">
+                <div class="feature">
+                    <i class="fas fa-dna"></i>
+                    <h4>Soil Type</h4>
+                    <p>Get recommendations for optimal soil conditions</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-cloud-sun"></i>
+                    <h4>Climate</h4>
+                    <p>Learn ideal climate conditions for your plant</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-spray-can"></i>
+                    <h4>Pesticides</h4>
+                    <p>Receive tailored pesticide suggestions</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h4>Care Schedule</h4>
+                    <p>Get personalized cultivation timeline</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap & Chart JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Display file name when selected
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name || 'No file selected';
+            document.querySelector('.file-label').textContent = fileName;
+        });
+        
+        // Drag and drop functionality
+        const uploadArea = document.querySelector('.upload-area');
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, unhighlight, false);
+        });
+        
+        function highlight() {
+            uploadArea.style.borderColor = 'var(--primary-color)';
+            uploadArea.style.backgroundColor = 'rgba(129, 199, 132, 0.2)';
+        }
+        
+        function unhighlight() {
+            uploadArea.style.borderColor = 'var(--secondary-color)';
+            uploadArea.style.backgroundColor = 'rgba(129, 199, 132, 0.05)';
+        }
+        
+        uploadArea.addEventListener('drop', handleDrop, false);
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            document.getElementById('fileInput').files = files;
+            document.querySelector('.file-label').textContent = files[0]?.name || 'No file selected';
+        }
+
+        // Chart initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            // Crop Yield Chart
+            const cropYieldCtx = document.getElementById('cropYieldChart').getContext('2d');
+            new Chart(cropYieldCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Tomatoes', 'Potatoes', 'Corn', 'Wheat', 'Soybeans'],
+                    datasets: [{
+                        label: 'Yield (tons/acre)',
+                        data: [12, 8, 10, 7, 9],
+                        backgroundColor: [
+                            'rgba(30, 91, 78, 0.7)',
+                            'rgba(71, 137, 73, 0.7)',
+                            'rgba(255, 143, 0, 0.7)',
+                            'rgba(129, 199, 132, 0.7)',
+                            'rgba(200, 230, 201, 0.7)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Current Season Yield'
+                        }
+                    }
+                }
+            });
+
+            // Sales Chart
+            const salesCtx = document.getElementById('salesChart').getContext('2d');
+            new Chart(salesCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Monthly Sales ($)',
+                        data: [1200, 1900, 1700, 2100, 2500, 2300],
+                        fill: false,
+                        borderColor: 'rgba(30, 91, 78, 1)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Monthly Sales Trend'
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

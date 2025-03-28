@@ -1,0 +1,32 @@
+<!-- order_list.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order List</title>
+</head>
+<body>
+    <h1>Your Orders</h1>
+    <table border="1">
+        <tr>
+            <th>Order ID</th>
+            <th>Product</th>
+            <th>Amount Paid</th>
+            <th>Status</th>
+            <th>Details</th>
+        </tr>
+        {% for payment in payments %}
+        <tr>
+            <td>{{ payment.order_id }}</td>
+            <td>{{ payment.product.name }}</td>
+            <td>{{ payment.amount_paid }}</td>
+            <td>{{ payment.status }}</td>
+            <td>
+                <!-- Link to the order_detail page using the payment's ID -->
+                <a href="{% url 'order_detail' payment.id %}">View More</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

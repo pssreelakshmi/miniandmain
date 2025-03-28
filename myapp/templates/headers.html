@@ -155,16 +155,7 @@
         </div><br><br>
        <!-- <h2 class="text-center">Admin Panel</h2>-->
         <a href="{% url 'admin_dashboard' %}"><i class="fa fa-tachometer"></i> Dashboard</a>
-      
-        <div class="dropdown">
-            <a class="dropdown-toggle" href="#" role="button" id="categoryDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fa fa-list"></i> Payment
-            </a>
-            <div class="dropdown-menu" aria-labelledby="categoryDropdown">
-                <a href="{% url 'payment_table' %}"><i class="fas fa-comments"></i> Payment</a>
-                <a href="{% url 'manage_users' %}"><i class="fa fa-users"></i> Manage Users</a>
-            </div>
-        </div>
+        <a href="{% url 'manage_users' %}"><i class="fa fa-users"></i> Manage Users</a>
         <div class="dropdown">
             <a class="dropdown-toggle" href="#" role="button" id="categoryDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-list"></i> Category
@@ -209,70 +200,7 @@
         </div>
         <a href="{% url 'compare_prices' %}"><i class="fa fa-exchange"></i> Compare Prices</a>
        <!-- <a href="{% url 'feedback_list' %}" class="btn btn-primary mt-3">Feedback & Ratings</a>-->
-        
         <a href="{% url 'login' %}"><i class="fa fa-sign-out"></i> Logout</a>
     </div>
-    <div class="content">
-        <h1>Welcome to Admin Portal</h1>
-        <br><br><br>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card text-white bg-primary mb-3">
-                    <div class="card-header">Farmers</div>
-                    <div class="card-body">
-                        <h5 class="card-title">{{ farmer_count }}</h5>
-                        <p class="card-text">Number of Farmers</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card text-white bg-success mb-3">
-                    <div class="card-header">Customers</div>
-                    <div class="card-body">
-                        <h5 class="card-title">{{ customer_count }}</h5>
-                        <p class="card-text">Number of Customers</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card text-white bg-warning mb-3">
-                    <div class="card-header">Delivery Boys</div>
-                    <div class="card-body">
-                        <h5 class="card-title">{{ deliveryboy_count }}</h5>
-                        <p class="card-text">Number of Delivery Boys</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-4">
-                <div class="card text-white bg-info mb-3">
-                    <div class="card-header">Products</div>
-                    <div class="card-body">
-                        <h5 class="card-title">View All Product Details</h5>
-                        <a href="{% url 'admin_product_view' %}" class="btn btn-light">View</a>
-                    </div>
-                </div>
-            </div>
-        
-            <!-- New Feedback Card -->
-            <div class="col-md-4">
-                <div class="card bg-light-rose mb-3">
-                    <div class="card-header">Feedback</div>
-                    <div class="card-body">
-                        <h5 class="card-title">Feedback</h5>
-                        <a href="{% url 'feedback_list' %}" class="btn btn-light">View</a>
-
-                    </div>
-                </div>
-            </div>
-            
-        
-            
-        </div>
-    </div>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-</body>
-
-</html>
+    </body>
+    <html>

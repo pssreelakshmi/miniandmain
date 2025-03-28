@@ -1,0 +1,419 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Seasonal Products</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            display: flex;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: #1e5b4e; /* Dark Green for professional look */
+            color: white;
+            padding: 30px 20px;
+            box-shadow: 3px 0 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            height: 100vh;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 40px;
+            color: #ffffff;
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .sidebar nav ul li {
+            margin: 20px 0;
+        }
+
+        .sidebar nav ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar nav ul li a:hover {
+            background-color: #004d2b; /* Lighter Green */
+        }
+
+        .sidebar nav ul li a i {
+            margin-right: 10px;
+        }
+
+        /* Dropdown styles */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            left: 100%;
+            top: 0;
+            background-color: #1e5b4e;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            z-index: 1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #004d2b;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: 450px;
+            flex: 1;
+            padding: 40px;
+            background-color: #ffffff;
+            overflow-y: auto;
+            min-height: 100vh;
+        }
+
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-content h1 {
+            font-size: 32px;
+            color: #2d6a4f;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .main-content form {
+            margin-top: 30px;
+        }
+
+        label {
+            font-size: 14px;
+            color: #555;
+            margin-top: 10px;
+            display: block;
+        }
+
+        select,
+        input[type="text"],
+        textarea,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0 5px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 12px;
+            display: none;
+        }
+
+        .add-more {
+            background-color: #456739;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            text-decoration: underline;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .add-more:hover {
+            background-color: #4CAF50;
+        }
+
+        .link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        /* Remove Button Styles */
+        .remove-btn {
+            background-color: #e53e3e;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            font-size: 18px;
+            text-align: center;
+            margin-left: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .remove-btn:hover {
+            background-color: #b83232;
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        .input-container label {
+            margin-bottom: 5px;
+        }
+
+        .input-container .remove-btn {
+            align-self: flex-end;
+            margin-top: 5px;
+        }
+
+        .image-upload {
+            margin-top: 10px;
+        }
+
+        .image-upload label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .image-upload input[type="file"] {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .custom-btn {
+    display: inline-block;
+    padding: 10px 150px;
+    background-color: #225546;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.custom-btn:hover {
+    background-color: #0056b3;
+}
+
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2>Farmer Education</h2>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'education_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li class="dropdown">
+                        <a href="#"><i class="fas fa-users"></i> Seasonal Category</a>
+                        <div class="dropdown-content">
+                            <a href="{% url 'seasonal_category' %}">Add month</a>
+                            <a href="{% url 'list_seasonal_categories' %}">View product</a>
+                        </div>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#"><i class="fas fa-users"></i> Seasonal product</a>
+                        <div class="dropdown-content">
+                            <a href="{% url 'seasonal_product' %}">Add Product</a>
+                            <a href="{% url 'list_seasonal_products' %}">View product</a>
+                        </div>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#"><i class="fas fa-users"></i> Cultivation Tips</a>
+                        <div class="dropdown-content">
+                            <a href="{% url 'create_material' %}">Add Cultivation</a>
+                            <a href="{% url 'material_list' %}">View Categories</a>
+                        </div>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#"><i class="fas fa-users"></i> Category</a>
+                        <div class="dropdown-content">
+                            <a href="{% url 'edcat_category' %}">Add Category</a>
+                            <a href="{% url 'view_categories' %}">View Categories</a>
+                        </div>
+                    </li>
+                    <li><a href="#"><i class="fas fa-calendar-alt"></i> Events</a></li>
+                    <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                    <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="form-container">
+                <h1>Add Seasonal Products</h1>
+                <form id="productForm" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label>Select Category:</label>
+                    <select name="category_id" required>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}">{{ category.month_name }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label>Product Names (Add multiple products):</label>
+                    <div id="product-inputs">
+                        <div class="input-container">
+                            <label for="product_name"></label>
+                            <input type="text" name="product_name" id="product_name" onkeyup="validateInput(this)" required>
+                            <label for="description">Description:</label>
+                            <textarea name="description" id="description" rows="3"></textarea>
+                            <div class="image-upload">
+                                <label for="image">Image:</label>
+                                <input type="file" name="image" id="image" accept="image/*">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="add-more" onclick="addField()">Add More</button>
+                    <button type="submit">Add Products</button>
+                </form>
+                <a href="{% url 'list_seasonal_products' %}" class="custom-btn">View Products</a>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function addField() {
+            let inputContainer = document.createElement("div");
+            inputContainer.classList.add("input-container");
+
+            // Product Name Input
+            let productNameLabel = document.createElement("label");
+            productNameLabel.textContent = "Product Name:";
+            let productNameInput = document.createElement("input");
+            productNameInput.type = "text";
+            productNameInput.name = "product_name";
+            productNameInput.required = true;
+            productNameInput.setAttribute("onkeyup", "validateInput(this)");
+
+            // Description Input
+            let descriptionLabel = document.createElement("label");
+            descriptionLabel.textContent = "Description:";
+            let descriptionInput = document.createElement("textarea");
+            descriptionInput.name = "description";
+            descriptionInput.rows = "3";
+
+            // Image Upload
+            let imageUploadDiv = document.createElement("div");
+            imageUploadDiv.classList.add("image-upload");
+            let imageLabel = document.createElement("label");
+            imageLabel.textContent = "Image:";
+            let imageInput = document.createElement("input");
+            imageInput.type = "file";
+            imageInput.name = "image";
+            imageInput.accept = "image/*";
+
+            // Remove Button
+            let removeButton = document.createElement("button");
+            removeButton.type = "button";
+            removeButton.classList.add("remove-btn");
+            removeButton.textContent = "-";
+            removeButton.setAttribute("onclick", "removeField(this)");
+
+            inputContainer.appendChild(productNameLabel);
+            inputContainer.appendChild(productNameInput);
+            inputContainer.appendChild(descriptionLabel);
+            inputContainer.appendChild(descriptionInput);
+            inputContainer.appendChild(imageUploadDiv);
+            imageUploadDiv.appendChild(imageLabel);
+            imageUploadDiv.appendChild(imageInput);
+            inputContainer.appendChild(removeButton);
+
+            document.getElementById("product-inputs").appendChild(inputContainer);
+        }
+
+        function removeField(button) {
+            button.parentElement.remove();
+        }
+
+        function validateInput(input) {
+            if (input.value === "") {
+                input.style.borderColor = "red";
+            } else {
+                input.style.borderColor = "";
+            }
+        }
+    </script>
+     <script>
+       
+
+        function removeField(button) {
+            button.parentElement.remove();
+        }
+
+        function validateInput(input) {
+            let regex = /^[a-zA-Z0-9 ]+$/; // Regular expression for validation
+            if (input.value.trim() === "") {
+                input.style.borderColor = "red";
+                input.nextElementSibling.style.display = "block"; // Display error message
+                input.nextElementSibling.textContent = "Product name is required.";
+            } else if (!regex.test(input.value)) {
+                input.style.borderColor = "red";
+                input.nextElementSibling.style.display = "block"; // Display error message
+                input.nextElementSibling.textContent = "Only letters, numbers, and spaces are allowed.";
+            } else {
+                input.style.borderColor = "";
+                input.nextElementSibling.style.display = "none"; // Hide error message
+            }
+        }
+    </script>
+</body>
+</html>

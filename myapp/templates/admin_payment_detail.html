@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Payment Details</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% load static %}
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #ecf0f1;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            padding-top: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar .profile {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: #34495e;
+            border-bottom: 1px solid #ffffff;
+        }
+
+        .sidebar .profile img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            border: 2px solid #fff;
+        }
+
+        .sidebar .profile .name {
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .sidebar a {
+            color: #fff;
+            padding: 15px;
+            text-decoration: none;
+            display: block;
+            font-size: 16px;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .sidebar a:hover {
+            background: #1abc9c;
+            transition: background 0.3s ease;
+        }
+
+        .dropdown-menu {
+            background: #34495e;
+            border: none;
+        }
+
+        .dropdown-menu a {
+            color: #fff;
+            padding: 10px;
+        }
+
+        .dropdown-menu a:hover {
+            background: #1abc9c;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #ecf0f1;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .icon {
+            font-size: 20px;
+            color: #28a745; /* Green color for the delivery icon */
+        }
+
+        .pending-status {
+            color: rgb(221, 185, 26); /* Yellow color for pending status */
+            font-weight: bold; /* Optional: make it bold */
+        }
+    </style>
+</head>
+<body>
+    
+    
+    <div class="sidebar">
+        <div class="profile">
+            <img src="{% static 'img/admin.jpg' %}" alt="Admin Image">
+            <div class="name">Admin</div>
+        </div>
+        <a href="{% url 'admin_dashboard' %}"><i class="fa fa-tachometer"></i> Dashboard</a>
+        <a href="{% url 'manage_users' %}"><i class="fa fa-users"></i> Manage Users</a>
+        <div class="dropdown">
+            <a class="dropdown-toggle" href="#" role="button" id="categoryDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-list"></i> Category
+            </a>
+            <div class="dropdown-menu" aria-labelledby="categoryDropdown">
+                <a href="{% url 'add_category' %}"><i class="fa fa-plus"></i> Add Category</a>
+                <a href="{% url 'list_categories' %}"><i class="fa fa-eye"></i> View Category</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a class="dropdown-toggle" href="#" role="button" id="productDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-tags"></i> Product
+            </a>
+            <div class="dropdown-menu" aria-labelledby="productDropdown">
+                <a href="{% url 'add_product_category' %}"><i class="fa fa-plus"></i> Add Product</a>
+                <a href="{% url 'view_product_categories' %}"><i class="fa fa-eye"></i> View Product</a>
+            </div>
+        </div>
+        <a href="{% url 'admin_payment_detail' %}"><i class="fa fa-money"></i> View Payment Details</a>
+        <div class="dropdown">
+            <a class="dropdown-toggle" href="#" role="button" id="subcategoryDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-tags"></i> Sub Category
+            </a>
+            <div class="dropdown-menu" aria-labelledby="subcategoryDropdown">
+                <a href="{% url 'add_subcategory' %}"><i class="fa fa-plus"></i> Add Sub Category</a>
+                <a href="{% url 'view_subcategories' %}"><i class="fa fa-eye"></i> View Sub Category</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a class="dropdown-toggle" href="#" role="button" id="priceChartDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-line-chart"></i> Price Charts
+            </a>
+            <div class="dropdown-menu" aria-labelledby="priceChartDropdown">
+                <a class="dropdown-item" href="{% url 'add_price_chart' %}"><i class="fa fa-plus"></i> Add Price Chart</a>
+                <a class="dropdown-item" href="{% url 'view_price_charts' %}"><i class="fa fa-eye"></i> View Price Charts</a>
+            </div>
+        </div>
+        <a href="{% url 'compare_prices' %}"><i class="fa fa-exchange"></i> Compare Prices</a>
+        <a href="{% url 'login' %}"><i class="fa fa-sign-out"></i> Logout</a>
+    </div>
+
+
+    <div class="content">
+        <h1>Payment Details</h1>
+        {% if messages %}
+        <div class="alert alert-info">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Order_ID</th>
+                    <th>User</th>
+                    <th>Product</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Assign Delivery Boy</th>
+                </tr>
+            </thead>
+           
+            <tbody>
+                {% for payment in payments %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ payment.order_id }}</td>
+                    <td>{{ payment.user.email }}</td>
+                    <td>
+                        {% for order_product in payment.order_details.orderproduct_set.all %}
+                            {{ order_product.product.product_name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>{{ payment.amount_paid }}</td>
+                    
+                    <td>
+                        {% if payment.order_details.order_status == "Delivered" %}
+                            <span style="color: green; font-weight: bold;">{{ payment.order_details.order_status }}</span>
+                        {% else %}
+                            <span>{{ payment.order_details.order_status }}</span>
+                        {% endif %}
+                    </td>
+                    
+                    <td>{{ payment.created_at|date:"F d, Y H:i" }}</td>
+                    <td>
+                        <form action="{% url 'assign_delivery' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="payment_id" value="{{ payment.id }}"> <!-- Hidden field to pass payment ID -->
+                            <button type="submit" class="btn btn-primary">Assign Delivery</button> <!-- Button to assign delivery -->
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
