@@ -122,6 +122,58 @@ path('farmer/payment-list/', views.farmer_payment_list, name='farmer_payment_lis
     path('quality_detect/', views.quality_detect, name='quality_detect'),
 
      path('confirm-shipment/<int:payment_id>/', views.confirm_shipment, name='confirm_shipment'),
+ 
+        path('submit-feedback/<int:payment_id>/', views.submit_feedback_rating, name='submit_feedback_rating'),
+ path('feedback-list/', views.feedback_list, name='feedback_list'),
+  path('feedback_farm/', views.feedback_farm_view, name='feedback_farm'),
+    path('education/dashboard/', views.education_dashboard, name='education_dashboard'),  # New URL for education dashboard
+path('edcat-category/', views.edcat_category, name='edcat_category'),  
+    path('categories/', views.view_categories, name='view_categories'),
+ path('categories/update/<int:category_id>/', views.update_category, name='update_category'), 
+    path('categories/remove/<int:category_id>/',views.remove_category, name='remove_category'),  # Ensure this matches
+ path('create-material/', views.material_create, name='create_material'),
+   path('material-list/', views.material_list, name='material_list'),  # Add this line
+    path('materials/edit/<int:material_id>/', views.edit_material, name='edit_material'),
+    path('materials/delete/<int:material_id>/', views.delete_material, name='delete_material'),
+        path('farm-materials/', views.farmmaterial_view, name='farmmaterial_view'),
+          path('product-price-details/', views.product_price_details_view, name='product_price_details'),
+          path('trends/', views.trends_dashboard, name='trends'),
+            
+               path('sales-performance-data/', views.sales_performance_data, name='sales_performance_data'),
+               path('seasonal_category/', views.add_seasonal_category, name='seasonal_category'),
+    path('list_seasonal_categories/', views.list_seasonal_categories, name='list_seasonal_categories'),
+    
+     path('seasonal_product/', views.add_seasonal_product, name='seasonal_product'),
+         path("check-product-exists/", views.check_product_exists, name="check_product_exists"),
+    path('list_seasonal_products/', views.list_seasonal_products, name='list_seasonal_products'),
+     path('edit-seasonal-category/<int:category_id>/', views.edit_seasonal_category, name='edit_seasonal_category'),
+    path('delete-seasonal-category/<int:category_id>/', views.delete_seasonal_category, name='delete_seasonal_category'),
+    path('edit_seasonal_product/<int:product_id>/', views.edit_seasonal_product, name='edit_seasonal_product'),
+    path('delete-product/<int:product_id>/', views.delete_seasonal_product, name='delete_seasonal_product'),
+     path('seasonal/', views.seasonal_page, name='seasonal_page'),
+     path('add-event/', views.add_event, name='add_event'),
+     path('events/', views.event_list, name='event_list'),
+     path('farmer-event/', views.farmer_event, name='farmer_event'),
+path('events/edit/<int:event_id>/', views.edit_event, name='edit_event'),
+    path('events/delete/<int:event_id>/', views.delete_event, name='delete_event'),
+  
+    path('register-event/<int:event_id>/', views.register_event, name='register_event'),
+   path('verify-otp/', views.verify_otps, name='verify_otps'),  # Updated URL name
+     path('events/<int:event_id>/registered/', views.view_registered_people, name='view_registered_people'),
+     path('send_email/', views.send_email, name='send_email'),
+     
+        path('add_disease/', views.add_disease, name='add_disease'),
+    path('view_diseases/', views.view_diseases, name='view_diseases'),
+    path('edit_disease/<int:id>/', views.edit_disease, name='edit_disease'),
+    path('delete_disease/<int:id>/', views.delete_disease, name='delete_disease'),
+    path('farmer-disease/', views.farmer_disease, name='farmer_disease'),
+ 
+    
+
+    path('payment-table/', views.payment_table_view, name='payment_table'),
+    path('download-pdf/', views.download_pdf, name='download_pdf'),
+
+
 ]
 
  

@@ -1,4 +1,3 @@
-
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import User, Farmer, Customer, DeliveryBoy
 from django.core.mail import send_mail
@@ -29,7 +28,7 @@ from django.core.paginator import Paginator
 import razorpay
 from .models import Product
 import pkg_resources
-from .models import Cart, Payment, DeliveryAssignment, OrderDetails,FarmerPayment
+from .models import Cart, Payment, DeliveryAssignment, OrderDetails,FarmerPayment,Feedback,Rating
 
 
 
@@ -114,19 +113,30 @@ def verify_otp(request):
 
 
 
+from django.shortcuts import render, redirect
+from django.contrib.auth import login
+from .models import User  # Ensure you have the correct import for your User model
+
 def login_view(request):
     if request.method == 'POST':
         email = request.POST['email']
         password = request.POST['password']
         
+        # Check for admin credentials
         if email == 'admin@gmail.com' and password == 'Admin@123':
-            # Use Django's login function
             return redirect('admin_dashboard')
 
+        # Check for education module credentials
+        if email == 'education@gmail.com' and password == 'Education@123':
+            return redirect('education_dashboard')
+            # Create a user object for the education module
+           
+        # Authenticate existing users
         try:
             user = User.objects.get(email=email, password=password)
             login(request, user)  # Use Django's login function
             
+            # Redirect based on user role
             if user.role == 'farmer':
                 return redirect('farmer_dashboard')
             elif user.role == 'customer':
@@ -135,10 +145,14 @@ def login_view(request):
                 return redirect('deliveryboy_dashboard')
         except User.DoesNotExist:
             return render(request, 'login.html', {'error': 'Invalid credentials'})
+    
     return render(request, 'login.html')
 
 
+def education_dashboard(request):
+    return render(request, 'education_dashboard.html')  # Render the education dashboard template
 @login_required
+
 def customer_dashboard(request):
     if request.user.role != 'customer':
         messages.error(request, "You do not have permission to access this page.")
@@ -1180,9 +1194,6 @@ def verify_payment(request):
         return JsonResponse({'status': 'failed', 'error': str(e)})
 
 
-
-
-
 @login_required
 def farmer_payment_list(request):
     # Fetch all FarmerPayment records
@@ -1246,7 +1257,10 @@ def confirm_shipment(request, payment_id):
     return redirect('farmer_payment_list')
 
 
+
 #from myapp.models import Payment, Cart
+from .models import EventRegistration
+
 
 # Delete all entries from the Payment table
 #Payment.objects.all().delete()
@@ -1255,6 +1269,9 @@ def confirm_shipment(request, payment_id):
 #Cart.objects.all().delete()
 #OrderDetails.objects.all().delete()
 #FarmerPayment.objects.all().delete()
+#Feedback.objects.all().delete()
+#Rating.objects.all().delete()
+#EventRegistration.objects.all().delete()
 
 @login_required
 def success_view(request):
@@ -1343,6 +1360,15 @@ def assign_delivery(request):
 
     return render(request, 'admin_payment_detail.html')
 
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+from django.core.mail import send_mail
+from django.utils.crypto import get_random_string
+from django.contrib.auth.decorators import login_required
+from .models import DeliveryAssignment, Payment
+
+
+
 @login_required
 def deliveryboy_orders(request):
     deliveryboy = request.user  # Assuming the delivery boy is the logged-in user
@@ -1350,13 +1376,13 @@ def deliveryboy_orders(request):
     # Fetch assignments that are not delivered
     assignments = DeliveryAssignment.objects.filter(
         delivery_boy=deliveryboy
-    ).exclude(status='Delivered').select_related('payment', 'payment__user').prefetch_related('payment__order_details__orderproduct_set__product')
+    ).exclude(status='Delivered').select_related('payment', 'payment__user')
 
     context = {
         'assignments': assignments,
         'delivery_boy_email': deliveryboy.email,  # Pass the delivery boy's email to the context
     }
-    
+
     return render(request, 'deliveryboy_orders.html', context)
 
 
@@ -1377,11 +1403,10 @@ def send_delivery_notification(delivery_boy, payment):
 def my_deliveries(request):
     # Fetch orders delivered by the current logged-in delivery boy
     user = request.user
-    delivery_boy = get_object_or_404(DeliveryBoy, user=user)
-    
     delivered_orders = DeliveryAssignment.objects.filter(delivery_boy=user, status='Delivered')
     
     return render(request, 'my_deliveries.html', {'delivered_orders': delivered_orders})
+
 
 @login_required
 def delete_order(request, order_id):
@@ -1389,7 +1414,8 @@ def delete_order(request, order_id):
         assignment = get_object_or_404(DeliveryAssignment, id=order_id)
         assignment.delete()
         return redirect('deliveryboy_orders')  # Redirect to the orders page
-    
+
+
 @login_required  
 def request_otp(request, order_id):
     if request.method == 'POST':
@@ -1407,7 +1433,8 @@ def request_otp(request, order_id):
         )
         return redirect('deliveryboy_orders')  # Redirect back to orders page
 
-# Function to confirm OTP
+
+
 @login_required
 def confirm_otp(request, order_id):
     if request.method == 'POST':
@@ -1422,8 +1449,7 @@ def confirm_otp(request, order_id):
             return redirect('deliveryboy_orders')  # Redirect back to orders page
         else:
             messages.error(request, 'Invalid OTP. Please try again.')  # Error message
-            return redirect('deliveryboy_orders')  
-        
+            return redirect('deliveryboy_orders')
 
 def farmer_payment_details(request):
     if not request.user.is_authenticated:
@@ -1460,7 +1486,7 @@ def quality_detect(request):
             return redirect('quality_detect')  # Redirect back to the quality detect page
 
         # Check if the image is a fruit or vegetable based on the file name
-        allowed_keywords = ['apple', 'banana', 'orange', 'grapes', 'carrot', 'tomato', 'potato', 'lettuce', 'cucumber', 'pepper','gap','banana']
+        allowed_keywords = ['apple', 'banana', 'orange', 'grapes', 'carrot', 'tomato', 'potato', 'lettuce', 'cucumber', 'pepper','gap','banana','abc']
         if not any(keyword in image.name.lower() for keyword in allowed_keywords):
             messages.error(request, 'Please upload an image of a fruit or vegetable only.')
             return redirect('quality_detect')  # Redirect back to the quality detect page
@@ -1531,3 +1557,962 @@ def quality_detect(request):
             'explanation': final_explanation  # Pass the final explanation to the template
         })
     return render(request, 'quality_detect.html')
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Feedback, Rating, Payment
+
+def submit_feedback_rating(request, payment_id):
+    if request.method == "POST":
+        feedback_text = request.POST.get("feedback")
+        rating_value = request.POST.get("rating")
+
+        # Fetch payment and related order details
+        payment = get_object_or_404(Payment, id=payment_id)
+        order_details = payment.order_details
+
+        # Ensure order_details is present
+        if not order_details:
+            return render(request, 'error.html', {'message': 'Order details not found for this payment.'})
+
+        # Fetch related product(s)
+        products = order_details.products  # Corrected from 'product' to 'products'
+
+        # Assuming you want to save feedback for each product
+        for product in products.all():  # Adjust if 'products' is a related manager
+            # Save feedback
+            Feedback.objects.create(
+                payment=payment,
+                user=request.user,
+                product=product,
+                feedback_text=feedback_text
+            )
+            
+            # Save rating
+            Rating.objects.create(
+                payment=payment,
+                user=request.user,
+                product=product,
+                rating_value=rating_value
+            )
+
+        # Redirect to a success page or back to payment details
+        return redirect('payment_detail', payment_id=payment_id)  # Adjust the redirect as necessary
+    
+    return render(request, 'payment_details.html')
+
+
+from django.shortcuts import render
+from .models import Feedback, Rating
+
+def feedback_list(request):
+    # Fetch all feedback and rating data
+    feedbacks = Feedback.objects.select_related('user', 'product', 'payment', 'product__farmer').all()
+    ratings = Rating.objects.select_related('user', 'product', 'payment', 'product__farmer').all()
+
+    # Render the feedback list template
+    return render(request, 'feedback_list.html', {
+        'feedbacks': feedbacks,
+        'ratings': ratings,
+    })
+
+
+from django.shortcuts import render
+
+def feedback_farm_view(request):
+    feedbacks = Feedback.objects.all()
+    ratings = Rating.objects.all()
+    return render(request, 'feedback_farm.html', {'feedbacks': feedbacks, 'ratings': ratings})
+
+
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import EdCat
+import re
+from django.db.models import Q
+
+def edcat_category(request):
+    if request.method == 'POST':
+        catname = request.POST.get('catname').strip()  # Get and strip whitespace
+
+        if not catname:
+            error_message = "Category name is required."
+            return render(request, 'edadd_category.html', {'error_message': error_message})
+
+        # Case-insensitive and whitespace-insensitive duplicate check
+        if EdCat.objects.filter(Q(catname__iexact=catname) | Q(catname__icontains=catname)).exists():
+            error_message = "This category already exists ."
+            return render(request, 'edadd_category.html', {'error_message': error_message})
+
+
+        if not re.match("^[a-zA-Z ]+$", catname):
+            error_message = "Category name must only contain letters and spaces."
+            return render(request, 'edadd_category.html', {'error_message': error_message})
+
+        EdCat.objects.create(catname=catname)
+        messages.success(request, "Category added successfully!")
+        return redirect('edcat_category')
+
+    categories = EdCat.objects.all()
+    return render(request, 'edadd_category.html', {'categories': categories})
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from .models import EdCat
+
+# View all categories
+def view_categories(request):
+    categories = EdCat.objects.all()  # Fetch all categories from the EdCat table
+    return render(request, 'view_categories.html', {'categories': categories})
+
+# Remove/Delete category
+def remove_category(request, category_id):
+    category = get_object_or_404(EdCat, catid=category_id)  # Get the category by ID
+    category.delete()  # Remove the category from the database
+    messages.success(request, 'Category removed successfully.')  # Show success message
+    return redirect('view_categories')  # Redirect back to the categories list
+
+# Update/Edit category
+def update_category(request, category_id):  # Ensure the function accepts category_id
+    category = get_object_or_404(EdCat, catid=category_id)  # Get the category by ID
+
+    if request.method == 'POST':
+        catname = request.POST.get('catname')  # Get the updated category name from the form
+        
+        # Check if the category name already exists
+        if EdCat.objects.filter(catname=catname).exclude(catid=category_id).exists():
+            messages.error(request, 'Category name already exists. Please choose a different name.')  # Show error message
+            return render(request, 'update_category.html', {'category': category})  # Render the form again with the existing category
+
+        if catname:  # Check if the category name is provided
+            category.catname = catname  # Update the category name
+            category.save()  # Save the changes to the database
+            messages.success(request, 'Category updated successfully.')  # Show success message
+            return redirect('view_categories')  # Redirect back to the categories list
+        else:
+            messages.error(request, 'Category name cannot be empty.')  # Show error message
+
+    return render(request, 'update_category.html', {'category': category})  # Render the update form
+
+
+from django.shortcuts import render, redirect
+from .models import Material, EdCat
+from django.http import HttpResponse
+
+def material_create(request):
+    if request.method == 'POST':
+        # Handling form data
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        content = request.POST.get('content')
+        category_id = request.POST.get('category')
+        
+        # Handling the image
+        image = request.FILES.get('image')
+
+        # Create a new material object and save it to the database
+        new_material = Material(
+            title=title,
+            description=description,
+            content=content,
+            category_id=category_id,
+            image=image,
+        )
+        new_material.save()
+
+        # Redirect to the material list page after saving the new material
+        return redirect('material_list')  # Adjust the URL name based on your project
+
+    # Get all categories from EdCat table
+    categories = EdCat.objects.all()
+
+    # Render the create material form if the method is GET
+    return render(request, 'create_material.html', {'categories': categories})
+
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Material
+
+
+def material_list(request):
+    materials = Material.objects.all()  # Get all materials from the database
+    return render(request, 'material_list.html', {'materials': materials})
+
+# View for editing a material
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Material, EdCat
+
+def edit_material(request, material_id):
+    # Get the material object to edit using the correct field name (material_id)
+    material = get_object_or_404(Material, material_id=material_id)
+
+    if request.method == 'POST':
+        # Get the form values
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        content = request.POST.get('content')
+        category_name = request.POST.get('category')  # The name of the selected category
+
+        # Get the EdCat instance corresponding to the category
+        category = EdCat.objects.get(catname=category_name)
+
+        # Handle the image (optional)
+        image = request.FILES.get('image')
+        
+        # Update the material object
+        material.title = title
+        material.description = description
+        material.content = content
+        material.category = category  # Assign the EdCat instance
+        if image:
+            material.image = image
+        
+        # Save the updated material object
+        material.save()
+
+        # Redirect to material list or another page
+        return redirect('material_list')  # Adjust this URL name based on your project
+
+    # Get all categories to populate the dropdown in the form
+    categories = EdCat.objects.all()
+
+    # Render the edit material form
+    return render(request, 'edit_material.html', {'material': material, 'categories': categories})
+
+# View for deleting a material
+def delete_material(request, material_id):
+    material = get_object_or_404(Material, material_id=material_id)  # Get material by ID
+    if request.method == 'POST':
+        material.delete()  # Delete the material from the database
+        return redirect('material_list')  # Redirect to the materials list page
+
+    return render(request, 'delete_material.html', {'material': material})
+
+from django.shortcuts import render
+from .models import Material, EdCat
+
+def farmmaterial_view(request):
+    category_id = request.GET.get('category')  # Get selected category from URL
+    categories = EdCat.objects.all()  # Fetch all categories
+    
+    if category_id:
+        materials = Material.objects.filter(category_id=category_id)  # Filter materials by category
+    else:
+        materials = Material.objects.all()  # Fetch all materials if no category is selected
+    
+    return render(request, 'farmmaterial_view.html', {'materials': materials, 'categories': categories, 'selected_category': category_id})
+
+
+from django.shortcuts import render
+from .models import Price_Chart
+
+def product_price_details_view(request):
+    # Retrieve all price chart entries
+    price_charts = Price_Chart.objects.all()
+
+    return render(request, 'product_price_details.html', {'price_charts': price_charts})
+
+from django.shortcuts import render
+
+def trends_dashboard(request):
+    return render(request, 'trends.html')
+
+from django.http import JsonResponse
+from django.db.models import Sum
+from myapp.models import OrderDetails, Product
+
+def sales_performance_data(request):
+    sales_data = (
+        OrderDetails.objects
+        .values('product__name')  # Group by product name
+        .annotate(total_sales=Sum('quantity'))  # Sum of quantity sold
+        .order_by('-total_sales')  # Order by most sold products
+    )
+
+    labels = [item['product__name'] for item in sales_data]
+    data = [item['total_sales'] for item in sales_data]
+
+    return JsonResponse({'labels': labels, 'data': data})
+
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import SeasonalCategory
+import re
+from django.db.models import Q
+
+def add_seasonal_category(request):
+    if request.method == "POST":
+        month_name = request.POST.get('month_name').strip()  # Strip whitespace
+
+        if not month_name:
+            messages.error(request, "Month name is required.")
+            return render(request, 'seasonal_category.html')  # Re-render the form
+
+        # Case-insensitive and whitespace-insensitive duplicate check
+        if SeasonalCategory.objects.filter(Q(month_name__iexact=month_name) | Q(month_name__icontains=month_name)).exists():
+            messages.error(request, "This month category already exists.")
+            return render(request, 'seasonal_category.html')
+
+        if not re.match("^[a-zA-Z ]+$", month_name):
+            messages.error(request, "Month name must only contain letters and spaces.")
+            return render(request, 'seasonal_category.html')
+
+        SeasonalCategory.objects.create(month_name=month_name)
+        messages.success(request, "Seasonal category added successfully.")
+        return redirect('seasonal_category')  # Redirect after successful creation
+
+    return render(request, 'seasonal_category.html')
+
+
+def list_seasonal_categories(request):
+    categories = SeasonalCategory.objects.all()
+    return render(request, 'list_seasonal_categories.html', {'categories': categories})
+
+
+def edit_seasonal_category(request, category_id):
+    category = get_object_or_404(SeasonalCategory, id=category_id)
+    if request.method == "POST":
+        new_month_name = request.POST.get("month_name")
+        category.month_name = new_month_name
+        category.save()
+        messages.success(request, "Category updated successfully!")
+        return redirect('list_seasonal_categories')
+    return render(request, 'edit_seasonal_category.html', {'category': category})
+
+def delete_seasonal_category(request, category_id):
+    category = get_object_or_404(SeasonalCategory, id=category_id)
+    category.delete()
+    messages.success(request, "Category deleted successfully!")
+    return redirect('list_seasonal_categories')
+
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from .models import SeasonalCategory, SeasonalProduct
+
+from django.shortcuts import render, redirect
+from .models import SeasonalCategory, SeasonalProduct
+from django.db.models import Q
+import re
+
+def add_seasonal_product(request):
+    categories = SeasonalCategory.objects.all()
+
+    if request.method == "POST":
+        category_id = request.POST.get('category_id')
+        product_names = request.POST.getlist('product_name')  # Get list of product names
+        descriptions = request.POST.getlist('description')  # Get list of descriptions
+        images = request.FILES.getlist('image')  # Get list of images
+
+        category = SeasonalCategory.objects.get(id=category_id)
+
+        for i in range(len(product_names)):
+            product_name = product_names[i].strip()  # Strip whitespace from product name
+            description = descriptions[i].strip() if i < len(descriptions) else ""  # Handle missing descriptions
+            image = images[i] if i < len(images) else None  # Handle missing images
+
+            if not product_name:  # Check for empty product name
+                return render(request, 'seasonal_product.html', {
+                    'categories': categories,
+                    'error_message': "Product name is required."
+                })
+
+            # Case-insensitive and whitespace-insensitive duplicate check within the same category
+            if SeasonalProduct.objects.filter(
+                Q(product_name__iexact=product_name) | Q(product_name__icontains=product_name),
+                category=category
+            ).exists():
+                return render(request, 'seasonal_product.html', {
+                    'categories': categories,
+                    'error_message': f"The product '{product_name}' already exists in this category."
+                })
+
+            if not re.match("^[a-zA-Z0-9 ]+$", product_name): # Validation for product name
+                return render(request, 'seasonal_product.html', {
+                    'categories': categories,
+                    'error_message': f"The product name '{product_name}' contains invalid characters. Only letters, numbers and spaces are allowed."
+                })
+
+
+            SeasonalProduct.objects.create(
+                category=category,
+                product_name=product_name,
+                description=description,
+                image=image
+            )
+
+        return redirect('list_seasonal_products')
+
+    return render(request, 'seasonal_product.html', {'categories': categories})
+
+@csrf_exempt
+def check_product_exists(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        product_name = data.get("product_name", "").strip()
+        category_id = data.get("category_id", "").strip()
+
+        if SeasonalProduct.objects.filter(product_name__iexact=product_name, category_id=category_id).exists():
+            return JsonResponse({"exists": True})
+        else:
+            return JsonResponse({"exists": False})
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import SeasonalProduct, Category
+
+def list_seasonal_products(request):
+    products = SeasonalProduct.objects.all()
+    return render(request, 'list_seasonal_products.html', {'products': products})
+
+from django.shortcuts import render, get_object_or_404, redirect
+from.models import SeasonalProduct, SeasonalCategory
+from django.db.models import Q
+import re
+
+def edit_seasonal_product(request, product_id):
+    product = get_object_or_404(SeasonalProduct, id=product_id)
+    categories = SeasonalCategory.objects.all()
+
+    if request.method == "POST":
+        product_name = request.POST.get('product_name').strip()  # Strip whitespace
+        category_id = request.POST.get('category_id')
+        description = request.POST.get('description', '').strip()  # Strip whitespace from description
+        image = request.FILES.get('image')  # Get the new image if uploaded
+
+        category = get_object_or_404(SeasonalCategory, id=category_id)
+
+        if not product_name:
+            error_message = "Product name is required."
+            return render(request, 'edit_seasonal_product.html', {
+                'product': product,
+                'categories': categories,
+                'error_message': error_message
+            })
+
+        # Case-insensitive and whitespace-insensitive duplicate check (excluding the current product)
+        if SeasonalProduct.objects.filter(
+            Q(product_name__iexact=product_name) | Q(product_name__icontains=product_name),
+            category=category
+        ).exclude(id=product_id).exists():  # Exclude the current product from the duplicate check
+            error_message = f"The product '{product_name}' already exists in this category."
+            return render(request, 'edit_seasonal_product.html', {
+                'product': product,
+                'categories': categories,
+                'error_message': error_message
+            })
+
+        if not re.match("^[a-zA-Z0-9 ]+$", product_name): # Validation for product name
+            error_message = f"The product name '{product_name}' contains invalid characters. Only letters, numbers and spaces are allowed."
+            return render(request, 'edit_seasonal_product.html', {
+                'product': product,
+                'categories': categories,
+                'error_message': error_message
+            })
+
+        product.product_name = product_name
+        product.category = category
+        product.description = description  # Update description
+
+        if image:  # Update image only if a new one is uploaded
+            product.image = image
+
+        product.save()
+
+        return redirect('list_seasonal_products')
+
+    return render(request, 'edit_seasonal_product.html', {'product': product, 'categories': categories})
+
+
+def delete_seasonal_product(request, product_id):
+    product = get_object_or_404(SeasonalProduct, id=product_id)
+    product.delete()
+    return redirect('list_seasonal_products')
+
+# views.py
+
+# views.py
+
+# views.py
+
+from django.shortcuts import render
+from .models import SeasonalProduct, SeasonalCategory
+
+def seasonal_page(request):
+    # Get selected category from the GET request
+    selected_category = request.GET.get('category')
+    categories = SeasonalCategory.objects.all()  # Fetch all categories
+    
+    if selected_category:
+        # Filter products based on the selected category
+        products = SeasonalProduct.objects.filter(category__id=selected_category)
+        selected_category_obj = SeasonalCategory.objects.get(id=selected_category)
+        selected_category_name = selected_category_obj.month_name  # Get the name of the selected category
+    else:
+        products = SeasonalProduct.objects.none()  # No products if no category is selected
+        selected_category_name = None  # Set to None if no category is selected
+    
+    context = {
+        'categories': categories,
+        'products': products,
+        'selected_category': selected_category,
+        'selected_category_name': selected_category_name,
+    }
+    return render(request, 'seasonal_page.html', context)
+
+
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import Event
+from datetime import datetime
+
+def add_event(request):
+    if request.method == "POST":
+        name = request.POST.get('name')
+        image = request.FILES.get('image')  # Handling file upload
+        description = request.POST.get('description')
+        registration_start_date = request.POST.get('registration_start_date')
+        registration_end_date = request.POST.get('registration_end_date')
+        event_date = request.POST.get('event_date')
+        mode = request.POST.get('mode')
+
+        # Basic Validation
+        if not all([name, image, description, registration_start_date, registration_end_date, event_date, mode]):
+            messages.error(request, "All fields are required.")
+            return redirect('add_event')
+
+        if registration_start_date > registration_end_date:
+            messages.error(request, "Registration start date must be before the end date.")
+            return redirect('add_event')
+
+        # Save Event
+        Event.objects.create(
+            name=name,
+            image=image,
+            description=description,
+            registration_start_date=registration_start_date,
+            registration_end_date=registration_end_date,
+            event_date=event_date,
+            mode=mode
+        )
+        messages.success(request, "Event added successfully!")
+        return redirect('add_event')  # Redirect to prevent form resubmission
+
+    return render(request, 'add_event.html')
+
+from django.shortcuts import render
+from .models import Event
+from django.shortcuts import render, redirect, get_object_or_404
+from django.core.files.storage import default_storage
+from .models import Event
+
+from django.shortcuts import render, get_object_or_404
+from .models import Event, EventRegistration  # Import your models
+
+def event_list(request):
+    events = Event.objects.all()  # Fetch all events from the database
+    return render(request, 'event_list.html', {'events': events})
+
+def view_registered_people(request, event_id):
+    event = get_object_or_404(Event, pk=event_id)
+    registrations = EventRegistration.objects.filter(event=event) # Fetch registrations for this event
+
+    return render(request, 'registered_people.html', {'event': event, 'registrations': registrations})
+
+def edit_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    
+    if request.method == "POST":
+        event.name = request.POST['name']
+        event.description = request.POST['description']
+        event.registration_start_date = request.POST['registration_start_date']
+        event.registration_end_date = request.POST['registration_end_date']
+        event.event_date = request.POST['event_date']
+        event.mode = request.POST['mode']
+        
+        if 'image' in request.FILES:
+            if event.image:
+                default_storage.delete(event.image.path)
+            event.image = request.FILES['image']
+        
+        event.save()
+        return redirect('event_list')
+
+    return render(request, 'edit_event.html', {'event': event})
+
+# Delete Event
+def delete_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    if event.image:
+        default_storage.delete(event.image.path)
+    event.delete()
+    return redirect('event_list')
+
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Event, EventRegistration
+from django.contrib import messages
+from django.core.mail import send_mail
+from django.conf import settings
+from django.http import JsonResponse
+import random
+from datetime import date
+
+def farmer_event(request):
+    today = date.today()  # Get today's date
+    events = Event.objects.all()  # Fetch all events (You can filter if needed)
+
+    # Check if the user has already registered for each event
+    registered_events = []
+    if request.user.is_authenticated:  # Assuming you have user authentication
+        registered_events = EventRegistration.objects.filter(email=request.user.email).values_list('event_id', flat=True)
+    
+    return render(request, 'farmer_event.html', {
+        'events': events,
+        'today': today,
+        'registered_events': registered_events,  # Pass registered event IDs to the template
+    })
+
+def generate_otp():
+    """Generate a 6-digit OTP."""
+    return str(random.randint(100000, 999999))
+
+def register_event(request, event_id):
+    """Handles event registration and sends OTP via email."""
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+
+        # Validate inputs
+        if not all([name, email, phone]):
+            return JsonResponse({'status': 'error', 'message': 'All fields are required.'}, status=400)
+
+        try:
+            event = Event.objects.get(id=event_id)  # Ensure event exists
+        except Event.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Invalid event ID.'}, status=400)
+
+        # Check if the user has already registered for this event
+        if EventRegistration.objects.filter(event_id=event_id, email=email).exists():
+            return JsonResponse({'status': 'error', 'message': 'You have already registered for this event.'}, status=400)
+
+        # Generate OTP
+        otp = generate_otp()
+
+        # Store data in session
+        request.session['otp'] = otp
+        request.session['event_id'] = event_id
+        request.session['name'] = name
+        request.session['email'] = email
+        request.session['phone'] = phone
+
+        # Send OTP via email
+        send_mail(
+            'Event Registration OTP',
+            f'Your OTP for event registration is: {otp}',
+            settings.EMAIL_HOST_USER,
+            [email],
+            fail_silently=False,
+        )
+
+        return JsonResponse({'status': 'success', 'message': 'OTP sent to your email.'})
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
+
+
+def verify_otps(request):
+    """Verifies the OTP and registers the user for the event."""
+    if request.method == 'POST':
+        user_otp = request.POST.get('otp')
+        stored_otp = request.session.get('otp')
+
+        if user_otp == stored_otp:
+            # Retrieve stored session data
+            event_id = request.session.get('event_id')
+            name = request.session.get('name')
+            email = request.session.get('email')
+            phone = request.session.get('phone')
+
+            try:
+                event = Event.objects.get(id=event_id)
+                # Save data to EventRegistration table with status 'pending'
+                EventRegistration.objects.create(
+                    event=event,
+                    name=name,
+                    email=email,
+                    phone=phone,
+                    status='pending'  # Set status to 'pending'
+                )
+
+                # Send confirmation email
+                send_mail(
+                    'Event Registration Successful',
+                    'You have successfully registered for the event. The event details will be shared soon.',
+                    settings.EMAIL_HOST_USER,
+                    [email],
+                    fail_silently=False,
+                )
+
+                # Clear session data
+                for key in ['otp', 'event_id', 'name', 'email', 'phone']:
+                    request.session.pop(key, None)
+
+                return JsonResponse({'status': 'success', 'message': 'Registration successful.'})
+
+            except Event.DoesNotExist:
+                return JsonResponse({'status': 'error', 'message': 'Invalid event ID.'}, status=400)
+
+        return JsonResponse({'status': 'error', 'message': 'Invalid OTP.'}, status=400)
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
+
+
+from django.http import JsonResponse
+from django.core.mail import send_mail
+
+def send_email(request):
+    """Handles sending emails and updating status to 'delivered'."""
+    if request.method == 'POST':
+        emails = request.POST.get('emails').split(',')
+        link = request.POST.get('link')
+        subject = request.POST.get('subject')
+
+        for email in emails:
+            # Send email
+            send_mail(
+                subject,
+                f'Here is the link for the event: {link}',
+                settings.EMAIL_HOST_USER,
+                [email],
+                fail_silently=False,
+            )
+
+            # Update status to 'delivered'
+            EventRegistration.objects.filter(email=email).update(status='delivered')
+
+        return JsonResponse({'status': 'success', 'message': 'Emails sent successfully.'})
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
+    
+    
+    
+    
+    
+# Delete all entries from the Payment table
+#Payment.objects.all().delete()
+
+# Delete all entries from the Cart table
+#Cart.objects.all().delete()
+#OrderDetails.objects.all().delete()
+#FarmerPayment.objects.all().delete()
+#Feedback.objects.all().delete()
+#Rating.objects.all().delete()
+#Rating.objects.all().delete()
+#EventRegistration.objects.all().delete()
+
+# Import the Plant model
+#from myapp.models import Plant
+
+# Delete all entries from the Plant model
+#Plant.objects.all().delete()
+
+
+from django.shortcuts import render
+
+def upload_image(request):
+    return render(request, 'upload_image.html')
+
+
+
+# views.py
+# views.py
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import PlantDisease
+from django.shortcuts import render, redirect
+from .models import PlantDisease
+from django.core.exceptions import ValidationError
+import re
+
+def add_disease(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        image = request.FILES.get('image')
+        description = request.POST.get('description')
+        tips_to_control = request.POST.get('tips_to_control')  # New field
+
+        # Validate title: it should not contain numbers
+        if title and re.search(r'\d', title):  # Title contains numbers
+            return render(request, 'add_disease.html', {'error': 'Title should not contain numbers.'})
+        
+        # Validate image: should not be a PDF
+        if image:
+            allowed_image_types = ['image/jpeg', 'image/png', 'image/jpg']
+            if image.content_type not in allowed_image_types:
+                return render(request, 'add_disease.html', {'error': 'Please upload a valid image (JPG, PNG). PDF is not allowed.'})
+        
+        # If title, image, description, and tips_to_control are provided and valid
+        if title and image and description and tips_to_control:
+            PlantDisease.objects.create(
+                title=title,
+                image=image,
+                description=description,
+                tips_to_control=tips_to_control  # New field
+            )
+            return redirect('view_diseases')  # Redirect to the disease list page after saving
+
+        # If any field is missing or invalid
+        return render(request, 'add_disease.html', {'error': 'All fields are required.'})
+
+    return render(request, 'add_disease.html')  # Initial GET request rendering
+
+
+def view_diseases(request):
+    diseases = PlantDisease.objects.all()
+    return render(request, 'view_diseases.html', {'diseases': diseases})
+
+from django.core.exceptions import ValidationError
+
+def edit_disease(request, id):
+    disease = get_object_or_404(PlantDisease, id=id)
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        tips_to_control = request.POST.get('tips_to_control')  # New field
+        
+        # Validate title - Ensure no numbers in the title
+        if any(char.isdigit() for char in title):
+            return render(request, 'edit_disease.html', {
+                'disease': disease,
+                'error_message': 'Title should not contain numbers.'
+            })
+        
+        # Validate image type
+        if 'image' in request.FILES:
+            image = request.FILES['image']
+            if not image.content_type in ['image/jpeg', 'image/png', 'image/jpg']:
+                return render(request, 'edit_disease.html', {
+                    'disease': disease,
+                    'error_message': 'Please upload a valid image (JPG, PNG).'
+                })
+            disease.image = image
+        
+        # Update fields
+        disease.title = title
+        disease.description = description
+        disease.tips_to_control = tips_to_control  # New field
+        disease.save()
+        return redirect('view_diseases')
+    
+    return render(request, 'edit_disease.html', {'disease': disease})
+
+def delete_disease(request, id):
+    disease = get_object_or_404(PlantDisease, id=id)
+    if request.method == 'POST':
+        disease.delete()
+    return redirect('view_diseases')
+
+
+
+from django.shortcuts import render
+from .models import PlantDisease
+
+def farmer_disease(request):
+    # Fetch all PlantDisease records from the database
+    diseases = PlantDisease.objects.all()
+    
+    # Pass the data to the template
+    return render(request, 'farmer_disease.html', {'diseases': diseases})
+
+
+
+from django.shortcuts import render
+from django.http import HttpResponse
+from .models import Payment
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from reportlab.lib import colors
+
+def payment_table_view(request):
+    payments = Payment.objects.all()
+    return render(request, 'payment_table.html', {'payments': payments})
+
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+from .models import Payment
+
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+from .models import Payment
+
+def download_pdf(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="payments.pdf"'
+
+    # Create a PDF document
+    pdf = SimpleDocTemplate(response, pagesize=letter)
+    elements = []
+
+    # Add a title
+    styles = getSampleStyleSheet()
+    title = Paragraph("Payment Data Report", styles['Title'])
+    elements.append(title)
+    elements.append(Spacer(1, 12))  # Add space after the title
+
+    # Fetch all payment data
+    payments = Payment.objects.all()
+
+    # Create a list of lists for the table data
+    data = [['User Email', 'Products', 'Amount Paid', 'Payment ID', 'Order ID', 'Order Status', 'Created At']]
+    for payment in payments:
+        # Get product names
+        if payment.order_details:
+            product_names = ", ".join([str(product.product_name) for product in payment.order_details.products.all()])
+        else:
+            product_names = "No products"
+
+        # Get order status
+        order_status = payment.order_details.order_status if payment.order_details else "Unknown"
+
+        # Append the row to the data
+        data.append([
+            payment.user.email,
+            product_names,
+            f"Rs.{payment.amount_paid:.2f}",  # Format amount as currency
+            payment.payment_id,
+            payment.order_id,
+            order_status,
+            payment.created_at.strftime('%Y-%m-%d %H:%M:%S')
+        ])
+
+    # Create the table
+    table = Table(data)
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#007BFF')),  # Header row background (blue)
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),  # Header row text color
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),  # Center align all cells
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),  # Header row font
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),  # Header row padding
+        ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#F8F9FA')),  # Table body background (light gray)
+        ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#DDDDDD')),  # Add grid lines (light gray)
+        ('FONTSIZE', (0, 0), (-1, -1), 10),  # Set font size for all cells
+        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),  # Table body text color
+    ]))
+
+    elements.append(table)
+    pdf.build(elements)
+
+    return response
