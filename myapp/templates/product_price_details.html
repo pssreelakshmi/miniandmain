@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Price Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+            display: flex;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #343a40;
+            color: white;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding-top: 60px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar .brand {
+            padding: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            background-color: #293641;
+            margin-bottom: 20px;
+        }
+        .sidebar a {
+            display: block;
+            padding: 15px 20px;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        .sidebar a:hover {
+            background-color: #647b94;
+        }
+        .sidebar a i {
+            margin-right: 10px;
+        }
+        .content {
+            margin-left: 250px;
+            padding-top: 80px;
+            width: calc(100% - 250px);
+        }
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #3a6e79;
+            color: white;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        td img {
+            max-width: 100px;
+            height: auto;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .no-data {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+        }
+        .product-item:hover {
+            transform: scale(1.02);
+            transition: transform 0.2s ease-in-out;
+        }
+        .product-image {
+            display: block;
+            margin: 0 auto;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding-top: 20px;
+            }
+            .content {
+                margin-left: 0;
+                width: 100%;
+            }
+            table {
+                width: 100%;
+            }
+            th, td {
+                padding: 10px;
+            }
+            td img {
+                max-width: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="brand">Farmer Dashboard</div>
+        <a href="{% url 'farmer_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="{% url 'farmer_profile' %}"><i class="fas fa-user"></i> Profile</a>
+        <a href="{% url 'add_product' %}"><i class="fas fa-plus"></i> Add Product</a>
+        <a href="{% url 'list_products' %}"><i class="fas fa-list"></i> View Products</a>
+        <a href="{% url 'farmer_payment_list' %}"><i class="fas fa-shopping-cart"></i> Orders</a>
+        <a href="{% url 'trends' %}"><i class="fas fa-comments"></i> Trends</a>
+        <a href="{% url 'feedback_farm' %}"><i class="fas fa-comments"></i> Feedback</a>
+        <a href="{% url 'farmmaterial_view' %}"><i class="fas fa-book"></i> Learning Materials</a>
+        <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    <div class="content">
+     
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity (kg)</th>
+                    <th>Price</th>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Image</th>
+                </tr>
+            </thead>
+            <tbody id="price-chart-body">
+                {% for price_chart in price_charts %}
+                    <tr class="product-item" data-date="{{ price_chart.date|date:'Y-m-d' }}" data-name="{{ price_chart.product_name.product_name }}" data-features="{{ price_chart.product.features }}" data-category="{{ price_chart.category.name }}">
+                        <td>{{ price_chart.product_name.product_name }}</td>
+                        <td>{{ price_chart.quantity }} kg</td>
+                        <td>{{ price_chart.price }}</td>
+                        <td>{{ price_chart.date }}</td>
+                        <td>{{ price_chart.category.name }}</td>
+                        <td>
+                            {% if price_chart.image %}
+                                <img src="{{ price_chart.image.url }}" alt="Product Image" class="product-image">
+                            {% else %}
+                                No Image
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6" class="no-data">No price charts available.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -492,6 +492,29 @@ color: rgb(48, 34, 34); /* Default gray color for other statuses */
     background-color: #5a6268;
 }
 
+.star-rating {
+    direction: rtl;
+    display: inline-block;
+}
+
+.star-rating input {
+    display: none;
+}
+
+.star-rating label {
+    font-size: 30px;
+    color: #ddd;
+    cursor: pointer;
+}
+
+.star-rating input:checked ~ label {
+    color: #f39c12; /* Color for selected stars */
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: #f39c12; /* Color for hovered stars */
+}
 
 </style>
 
@@ -545,17 +568,17 @@ color: rgb(48, 34, 34); /* Default gray color for other statuses */
         <div class="main-content">
             <div class="container mt-5">
                 <div class="card shadow-lg p-4">
-                    <div class="card-header bg-primary text-white text-center">
+                    <!--<div class="card-header bg-primary text-white text-center">
                         <h3>Order Details</h3>
-                    </div>
+                    </div>-->
                     <div class="card-body">
                         <!-- Display Order ID, Amount Paid, Date, and Status with larger font size -->
                         <div class="row">
                             <div class="col-md-12">
-                                <h4 class="font-weight-bold">Order ID: <span class="text-primary">{{ payment.order_id }}</span></h4>
-                                <h5>Amount Paid: <span class="text-success font-weight-bold">Rs {{ payment.amount_paid }}</span></h5>
-                                <h5>Date: <span class="text-muted">{{ payment.created_at|date:"F d, Y H:i" }}</span></h5>
-                                <h5>Status: 
+                                <h6 class="font-weight-bold">Order ID: <span class="text-primary">{{ payment.order_id }}</span></h6>
+                                <h6>Amount Paid: <span class="text-success font-weight-bold">Rs {{ payment.amount_paid }}</span></h6>
+                                <h6>Date: <span class="text-muted">{{ payment.created_at|date:"F d, Y H:i" }}</span></h6>
+                                <h6>Status: 
                                     <span class="badge 
                                         {% if payment.order_details.order_status == 'Delivered' %}
                                             badge-success
@@ -567,13 +590,13 @@ color: rgb(48, 34, 34); /* Default gray color for other statuses */
                                     ">
                                         {{ payment.order_details.order_status }}
                                     </span>
-                                </h5>
+                                </h6>
                             </div>
                         </div>
                         <hr>
         
                         <!-- Loop through each product in the order and display in boxed style -->
-                        <h4 class="mt-4">Products</h4>
+                        <h6 class="mt-4">Products</h6>
                         <div class="row">
                             {% for order_product in payment.order_details.orderproduct_set.all %}
                             <div class="col-md-4 mb-4">
@@ -595,10 +618,10 @@ color: rgb(48, 34, 34); /* Default gray color for other statuses */
                         <hr>
         
                         <!-- Customer Information -->
-                        <h4 class="mt-4">Customer Information</h4>
+                        <h6 class="mt-4">Customer Information</h6>
                         <div class="row">
                             <div class="col-md-6">
-                                <h5>Name: <span class="text-dark">{{ payment.user.name }}</span></h5>
+                                <h6>Name: <span class="text-dark">{{ payment.user.name }}</span></h6>
                                 <h6>Email: <span class="text-dark">{{ payment.user.email }}</span></h6>
                             </div>
                             <div class="col-md-6">
@@ -606,12 +629,41 @@ color: rgb(48, 34, 34); /* Default gray color for other statuses */
                                 <h6>Address: <span class="text-dark">{{ payment.user.address }}</span></h6>
                             </div>
                         </div>
+
+                        <!-- Feedback and Rating Section -->
+                        {% if payment.status == 'Delivered' %}
+                        <h4 class="mt-4">Feedback and Rating</h4>
+                        <form method="POST" action="{% url 'submit_feedback_rating' payment.id %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="feedback">Your Feedback:</label>
+                                <textarea id="feedback" name="feedback" class="form-control" rows="3" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="rating">Your Rating:</label>
+                                <div class="star-rating">
+                                    <input type="radio" id="star5" name="rating" value="5" required />
+                                    <label for="star5" class="star">&#9733;</label>
+                                    <input type="radio" id="star4" name="rating" value="4" />
+                                    <label for="star4" class="star">&#9733;</label>
+                                    <input type="radio" id="star3" name="rating" value="3" />
+                                    <label for="star3" class="star">&#9733;</label>
+                                    <input type="radio" id="star2" name="rating" value="2" />
+                                    <label for="star2" class="star">&#9733;</label>
+                                    <input type="radio" id="star1" name="rating" value="1" />
+                                    <label for="star1" class="star">&#9733;</label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit Feedback and Rating</button>
+                        </form>
+                        
+                        {% endif %}
                     </div>
                     
                     <!-- Card Footer -->
                     <div class="card-footer text-center">
-                        <a href="#" class="btn btn-primary btn-lg" id="generate-pdf">Generate Receipt PDF</a>
-                        <a href="{% url 'payment_list' %}" class="btn btn-secondary btn-lg">Back to Payment List</a>
+                        <a href="#" class="btn btn-primary btn-sm" id="generate-pdf">Generate Receipt PDF</a>
+                        <a href="{% url 'payment_list' %}" class="btn btn-secondary btn-sm">Back to Payment List</a>
                     </div>
                 </div>
             </div>

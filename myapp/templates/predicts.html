@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Prediction</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Load static files -->
+    {% load static %}
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: #1e5b4e;
+            color: white;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .brand {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            margin: 0 5px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: #004d2b;
+        }
+
+        /* Main Content Styles */
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            max-width: 1200px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.9); /* Semi-transparent white */
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .image-section {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .image-section img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-section {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        input[type="text"] {
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"]:focus {
+            border-color: #3498db;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+
+        button {
+            padding: 15px 25px;
+            background-color: #478949;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .error {
+            color: #e74c3c;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 90%;
+            text-align: left;
+        }
+
+        .modal-content h3 {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-content ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .modal-content ul li {
+            font-size: 1.1rem;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .modal-content ul li strong {
+            color: #3498db;
+            min-width: 180px;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .close-btn {
+            background-color: #478949;
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .close-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .image-section {
+                height: auto; /* Adjust height for mobile */
+                padding: 20px;
+            }
+
+            .form-section {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+
+            .modal-content {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="brand">
+            <i class="fas fa-leaf"></i> Farmer Dashboard
+        </div>
+        <nav class="nav-links">
+            <a href="{% url 'farmer_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="{% url 'list_products' %}"><i class="fas fa-list"></i> View Products</a>
+            <a href="{% url 'farmer_payment_list' %}"><i class="fas fa-shopping-cart"></i> Orders</a>
+            <a href="{% url 'add_product' %}"><i class="fas fa-plus"></i> Add Product</a>
+            <a href="{% url 'farmer_profile' %}"><i class="fas fa-user"></i> Profile</a>
+            <a href="{% url 'logout' %}" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="image-section">
+                <!-- Add the image using Django's static file handling -->
+                <img src="{% static 'img/a4f.jpeg' %}" alt="Crop Rotation">
+            </div>
+            <div class="form-section">
+                <h2>Plant Name</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="plant_name" placeholder="Enter Plant Name" required>
+                    <button type="submit">Predict</button>
+                </form>
+
+                {% if result %}
+                    {% if result == "Plant not found in the dataset." %}
+                        <p class="error">{{ result }}</p>
+                    {% else %}
+                        <div id="resultModal" class="modal" style="display: flex;">
+                            <div class="modal-content">
+                                <h3>Prediction Result</h3>
+                                <ul>
+                                    <li><strong>Climate:</strong> {{ result.climate }}</li>
+                                    <li><strong>Soil Type:</strong> {{ result.soil_type }}</li>
+                                    <li><strong>Pesticide Used:</strong> {{ result.pesticide }}</li>
+                                    <li><strong>Pesticide Application Time:</strong> {{ result.pesticide_time }}</li>
+                                    <li><strong>Growth Duration:</strong> {{ result.growth_duration }}</li>
+                                    <li><strong>Fertilizers Used:</strong> {{ result.fertilizers_used }}</li>
+                                    <li><strong>Harvesting Season:</strong> {{ result.harvesting_season }}</li>
+                                </ul>
+                                <button class="close-btn" onclick="closeModal()">Close</button>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Function to close the modal
+        function closeModal() {
+            document.getElementById('resultModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,293 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farm Material Tutorials</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            background-color: #f5f5f5;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background-color: #245d4d;
+            color: white;
+            position: fixed;
+            padding: 20px;
+            overflow-y: auto;
+            transition: width 0.3s ease;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #f5f5f5;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            padding: 10px;
+            margin: 10px 0;
+            background: #245d4d;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            font-size: 16px;
+        }
+
+        .sidebar ul li:hover {
+            background: #1abc9c;
+        }
+
+        /* Tree Bar */
+        .tree-bar {
+            width: 250px;
+            height: 100vh;
+            background: #245d4d;
+            color: white;
+            position: fixed;
+            right: 0;
+            top: 0;
+            padding: 20px;
+            overflow-y: auto;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .tree-bar.active {
+            transform: translateX(0);
+        }
+
+        .tree-bar h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #f5f5f5;
+        }
+
+        .tree-bar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .tree-bar ul li {
+            padding: 10px;
+            margin: 10px 0;
+            background: #245d4d;
+            text-align: center;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .tree-bar ul li:hover {
+            background: #1abc9c;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 250px; /* Adjust for sidebar width */
+            padding: 20px;
+            flex-grow: 1;
+            transition: margin-left 0.3s ease;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .material-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .material-card {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            height: 350px; /* Fixed height */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .material-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .material-card .description {
+            height: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .material-card .full-description {
+            display: none; /* Initially hidden */
+            margin-top: 10px;
+            text-align: left;
+        }
+
+        .material-card .read-more {
+            display: block;
+            color: #1abc9c;
+            cursor: pointer;
+            text-align: center;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 15px;
+            background: green;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .btn:hover {
+            background: darkgreen;
+        }
+
+        /* Toggle Button for Tree Bar */
+        .toggle-tree-bar {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            background: #245d4d;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .toggle-tree-bar:hover {
+            background: #1abc9c;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <h2>Farmer Dashboard</h2>
+        <ul>
+            <li><a href="{% url 'farmer_dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'farmer_profile' %}">Profile</a></li>
+            <li><a href="{% url 'add_product' %}">Add Product</a></li>
+            <li><a href="{% url 'list_products' %}">View Products</a></li>
+            <li><a href="{% url 'farmer_payment_list' %}">Orders</a></li>
+            <li><a href="{% url 'feedback_farm' %}">Feedback</a></li>
+            <li><a href="{% url 'farmmaterial_view' %}">Learning Materials</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Tree Bar -->
+    <div class="tree-bar" id="treeBar">
+        <h2>Categories</h2>
+        <ul>
+            <li onclick="filterVideos('all')">All Categories</li>
+            {% for category in categories %}
+                <li onclick="filterVideos('{{ category.catid }}')">{{ category.catname }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Toggle Button for Tree Bar -->
+    <div class="toggle-tree-bar" onclick="toggleTreeBar()">☰</div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <h2>Farm Materials & Tutorials</h2>
+            <div class="material-list" id="materialList">
+                {% for material in materials %}
+                <div class="material-card" data-category="{{ material.category.catid }}">
+                    <img src="{{ material.image.url }}" alt="{{ material.title }}">
+                    <h3>{{ material.title }}</h3>
+                    <p class="description">{{ material.description }}</p>
+                    <div class="full-description">
+                        <p>{{ material.description }}</p> <!-- Full description shown here -->
+                    </div>
+                    <span class="read-more" onclick="toggleDescription(this)">Read More</span>
+                    <a href="{{ material.content }}" target="_blank" class="btn">View Tutorial</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle the full description when "Read More" is clicked
+        function toggleDescription(element) {
+            var card = element.closest('.material-card');
+            var fullDescription = card.querySelector('.full-description');
+            
+            // Toggle visibility of the full description
+            if (fullDescription.style.display === "none" || fullDescription.style.display === "") {
+                fullDescription.style.display = "block";  // Show full description
+                element.textContent = "Read Less";  // Change text to "Read Less"
+            } else {
+                fullDescription.style.display = "none";  // Hide full description
+                element.textContent = "Read More";  // Change text to "Read More"
+            }
+        }
+
+        // Toggle the tree bar visibility
+        function toggleTreeBar() {
+            var treeBar = document.getElementById('treeBar');
+            treeBar.classList.toggle('active');
+        }
+
+        // Filter videos based on category
+        function filterVideos(categoryId) {
+            var materialCards = document.querySelectorAll('.material-card');
+            materialCards.forEach(function(card) {
+                if (categoryId === 'all' || card.getAttribute('data-category') === categoryId) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Seasonal Categories</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: #2c5041;
+            color: white;
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+            border-right: 2px solid #1a252f;
+        }
+        .sidebar h2 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #fff;
+            font-weight: bold;
+        }
+        .sidebar nav ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .sidebar nav ul li {
+            margin-bottom: 15px;
+        }
+        .sidebar nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+            display: block;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .sidebar nav ul li a:hover {
+            background-color: #1a252f;
+        }
+        .sidebar nav ul li a i {
+            margin-right: 10px;
+        }
+        /* Main Content */
+        .container {
+            margin-left: 270px; /* Adjusted to match sidebar width */
+            padding: 30px;
+            flex: 1;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #27ae60;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .btn {
+            padding: 8px 15px;
+            font-size: 14px;
+            margin: 3px;
+            border-radius: 5px;
+        }
+        .btn-warning {
+            background-color: #f39c12;
+            border-color: #f39c12;
+        }
+        .btn-danger {
+            background-color: #e74c3c;
+            border-color: #e74c3c;
+        }
+        .btn-primary {
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .alert {
+            margin-bottom: 20px;
+        }
+        .empty-message {
+            text-align: center;
+            color: #888;
+            font-size: 18px;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                margin-left: 0;
+                padding: 15px;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <h2>Farmer Education</h2>
+        <nav>
+            <ul>
+                <li><a href="{% url 'education_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li>
+                    <a href="#" data-bs-toggle="collapse" data-bs-target="#seasonalCategoryDropdown" aria-expanded="false" aria-controls="seasonalCategoryDropdown"><i class="fas fa-leaf"></i> Seasonal Category</a>
+                    <ul class="collapse" id="seasonalCategoryDropdown">
+                        <li><a href="{% url 'seasonal_category' %}">Add Month</a></li>
+                        <li><a href="{% url 'list_seasonal_categories' %}">View Categories</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" data-bs-toggle="collapse" data-bs-target="#seasonalProductDropdown" aria-expanded="false" aria-controls="seasonalProductDropdown"><i class="fas fa-seedling"></i> Seasonal Product</a>
+                    <ul class="collapse" id="seasonalProductDropdown">
+                        <li><a href="{% url 'seasonal_product' %}">Add Product</a></li>
+                        <li><a href="{% url 'list_seasonal_products' %}">View Products</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" data-bs-toggle="collapse" data-bs-target="#cultivationTipsDropdown" aria-expanded="false" aria-controls="cultivationTipsDropdown"><i class="fas fa-book"></i> Cultivation Tips</a>
+                    <ul class="collapse" id="cultivationTipsDropdown">
+                        <li><a href="{% url 'create_material' %}">Add Cultivation</a></li>
+                        <li><a href="{% url 'material_list' %}">View Tips</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" data-bs-toggle="collapse" data-bs-target="#categoryDropdown" aria-expanded="false" aria-controls="categoryDropdown"><i class="fas fa-tags"></i> Category</a>
+                    <ul class="collapse" id="categoryDropdown">
+                        <li><a href="{% url 'edcat_category' %}">Add Category</a></li>
+                        <li><a href="{% url 'view_categories' %}">View Categories</a></li>
+                    </ul>
+                </li>
+                <li><a href="#"><i class="fas fa-calendar-alt"></i> Events</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h2>List of Seasonal Categories</h2>
+        
+        {% if messages %}
+        <div class="alert alert-info">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="table-wrapper">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Si.No</th>
+                        <th>Month Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in categories %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ category.month_name }}</td>
+                        <td>
+                            <a href="{% url 'edit_seasonal_category' category.id %}" class="btn btn-warning btn-sm">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a href="{% url 'delete_seasonal_category' category.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this category?');">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="empty-message">No categories added yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <a href="{% url 'seasonal_category' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add New Category
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registered People for {{ event.name }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 36px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #38a56c;
+            color: white;
+            font-weight: 500;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Checkbox Styles */
+        input[type="checkbox"] {
+            cursor: pointer;
+        }
+
+        /* Pagination Styles */
+        .pagination {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 0 4px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            color: #333;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .pagination a:hover {
+            background-color: #38a56c;
+            color: white;
+        }
+
+        .pagination .selected-page {
+            background-color: #38a56c;
+            color: white;
+        }
+
+        /* Button Styles */
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #38a56c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #2d6a4f;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background-color: #5a6268;
+        }
+
+        /* Modal Styles */
+        #myModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #myModal .modal-content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            width: 500px;
+            max-width: 90%;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #myModal .modal-content h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        #myModal .modal-content label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        #myModal .modal-content input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        #myModal .modal-content .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        #myModal .modal-content .close:hover {
+            color: #333;
+        }
+
+        #myModal .modal-content button {
+            padding: 10px 20px;
+            background-color: #38a56c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin: 20px auto 0;
+        }
+
+        #myModal .modal-content button:hover {
+            background-color: #2d6a4f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Registered People for {{ event.name }}</h1>
+
+        {% if registrations %}
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="checkAll"></th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Status</th> <!-- New column for status -->
+                            <!-- Add other fields from your EventRegistration model -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for registration in registrations %}
+                            <tr>
+                                <td><input type="checkbox" name="selected-emails" value="{{ registration.email }}" {% if registration.status == 'delivered' %}disabled{% endif %}></td>
+                                <td>{{ registration.name }}</td>
+                                <td>{{ registration.email }}</td>
+                                <td>
+                                    <span class="status-badge status-{{ registration.status }}">
+                                        {{ registration.status }}
+                                    </span>
+                                </td> <!-- Display status with dynamic class -->
+                                <!-- Display other fields from your EventRegistration model -->
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="{% url 'event_registration_list' event.id page_obj.previous_page_number %}" class="pagination a">&laquo;</a>
+                {% endif %}
+
+                {% for i in page_obj.paginator.page_range %}
+                    {% if page_obj.number == i %}
+                        <a href="{% url 'event_registration_list' event.id i %}" class="pagination a selected-page">{{ i }}</a>
+                    {% else %}
+                        <a href="{% url 'event_registration_list' event.id i %}" class="pagination a">{{ i }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <a href="{% url 'event_registration_list' event.id page_obj.next_page_number %}" class="pagination a">&raquo;</a>
+                {% endif %}
+            </div>
+        {% else %}
+            <p>No one has registered for this event yet.</p>
+        {% endif %}
+
+        <button id="send-email" class="button">Send Mail</button>
+        <a href="{% url 'event_list' %}" class="back-button">Back to Event List</a>
+
+        <!-- Modal -->
+        <div id="myModal">
+            <div class="modal-content">
+                <span id="close-modal" class="close">&times;</span>
+                <h2>Send Email to Selected Users</h2>
+                <label for="link">Enter Link:</label>
+                <input id="link" type="text" placeholder="Enter Link">
+                <label for="subject">Subject:</label>
+                <input id="subject" type="text" value="Information Regarding {{ event.name }}" readonly>
+                <button id="send-link" class="button">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Add CSS for status badges */
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: capitalize;
+        }
+
+        .status-pending {
+            background-color: yellow;
+            color: black;
+        }
+
+        .status-delivered {
+            background-color: green;
+            color: white;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function() {
+            // Show modal when "Send Mail" button is clicked
+            $('#send-email').click(function() {
+                var emails = [];
+                $('input[name="selected-emails"]:checked').each(function() {
+                    emails.push($(this).val());
+                });
+
+                if (emails.length === 0) {
+                    alert('Please select at least one email');
+                    return;
+                }
+
+                $('#myModal').css('display', 'flex');  // Show modal
+            });
+
+            // Close modal when close button is clicked
+            $('#close-modal').click(function() {
+                $('#myModal').css('display', 'none');
+            });
+
+            // Close modal when clicking outside the modal
+            window.onclick = function(event) {
+                if (event.target == document.getElementById('myModal')) {
+                    $('#myModal').css('display', 'none');
+                }
+            };
+
+            // Handle "Send" button in modal
+            $('#send-link').click(function() {
+                var link = $('#link').val();
+                var emails = [];
+                $('input[name="selected-emails"]:checked').each(function() {
+                    emails.push($(this).val());
+                });
+                var subject = $('#subject').val();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "send_email" %}',
+                    data: {
+                        'emails': emails.join(','),
+                        'link': link,
+                        'subject': subject,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function(data) {
+                        alert('Emails sent successfully');
+                        $('#myModal').css('display', 'none');
+                        location.reload(); // Reload the page
+                    },
+                    error: function(xhr) {
+                        alert('Error sending emails: ' + xhr.responseText);
+                    }
+                });
+            });
+
+            // Check/uncheck all checkboxes
+            $('#checkAll').change(function() {
+                $('input[name="selected-emails"]:not(:disabled)').prop('checked', this.checked);
+            });
+        });
+    </script>
+</body>
+
+</html>

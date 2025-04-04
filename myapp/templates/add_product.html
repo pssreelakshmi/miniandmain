@@ -16,7 +16,7 @@
         }
         .sidebar {
             width: 250px;
-            background: #6d2319;
+            background: #283555;
             color: #fff;
             display: flex;
             flex-direction: column;
@@ -127,17 +127,19 @@
 <body>
     <div class="sidebar">
         <h2 class="text-center py-3">Farmer Dashboard</h2>
-        <a href="{% url 'farmer_dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a>
-        <div class="dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-leaf"></i> Products</a>
-            <div class="dropdown-menu">
-                <a href="{% url 'add_product' %}"><i class="fa fa-plus-square"></i> Add Product</a>
-                <a href="{% url 'list_products' %}"><i class="fa fa-eye"></i> View Products</a>
-            </div>
+        <div class="sidebar">
+           
+            <a href="{% url 'farmer_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="{% url 'farmer_profile' %}"><i class="fas fa-user"></i> Profile</a>
+            <a href="{% url 'add_product' %}"><i class="fas fa-plus"></i> Add Product</a>
+            <a href="{% url 'list_products' %}"><i class="fas fa-list"></i> View Products</a>
+            <a href="{% url 'farmer_payment_list' %}"><i class="fas fa-shopping-cart"></i> Orders</a>
+            <a href="{% url 'feedback_farm' %}"><i class="fas fa-comments"></i> Feedback</a>
+            <a href="{% url 'farmmaterial_view' %}"><i class="fas fa-book"></i> Learning Materials</a>
+            <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
-        <a href="#"><i class="fa fa-shopping-cart"></i> Orders</a>
-        <a href="#"><i class="fa fa-cogs"></i> Settings</a>
-        <a href="#"><i class="fa fa-sign-out"></i> Logout</a>
+        </div>
+       
     </div>
     <div class="content">
         <div class="container">
